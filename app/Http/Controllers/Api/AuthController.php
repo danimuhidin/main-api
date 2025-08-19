@@ -16,45 +16,25 @@ class AuthController extends Controller
      * operationId="loginUser",
      * tags={"Authentication"},
      * summary="Login Pengguna",
-     * description="Mengautentikasi pengguna dan mengembalikan token API",
+     * description="Mengautentikasi pengguna dengan email atau username, dan mengembalikan token API",
      * @OA\RequestBody(
      * required=true,
      * description="Kredensial login pengguna",
      * @OA\JsonContent(
-     * required={"email", "password"},
-     * @OA\Property(property="email", type="string", format="email", example="user@example.com"),
-     * @OA\Property(property="password", type="string", format="password", example="password123"),
+     * required={"login", "password"},
+     * @OA\Property(property="login", type="string", description="Bisa diisi dengan email atau username", example="admin"),
+     * @OA\Property(property="password", type="string", format="password", example="administrator"),
      * ),
      * ),
-     * @OA\Response(
-     * response=200,
-     * description="Login Berhasil",
-     * @OA\JsonContent(
-     * @OA\Property(property="message", type="string", example="Login successful"),
-     * @OA\Property(property="token", type="string", example="1|aBcDeFgHiJkLmNoPqRsTuVwXyZ123456")
-     * )
-     * ),
-     * @OA\Response(
-     * response=401,
-     * description="Unauthorized",
-     * @OA\JsonContent(
-     * @OA\Property(property="message", type="string", example="Email atau Password salah.")
-     * )
-     * ),
-     * @OA\Response(
-     * response=422,
-     * description="Validation Error",
-     * @OA\JsonContent(
-     * @OA\Property(property="message", type="string", example="The given data was invalid."),
-     * @OA\Property(property="errors", type="object")
-     * )
-     * )
+     * @OA\Response(response=200, description="Login Berhasil"),
+     * @OA\Response(response=401, description="Unauthorized"),
+     * @OA\Response(response=422, description="Validation Error")
      * )
      */
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
+            'login' => 'required|string',
             'password' => 'required|string',
         ]);
 
@@ -62,11 +42,18 @@ class AuthController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json(['message' => 'Email atau Password salah.'], 401);
+        $loginField = filter_var($request->login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+        $credentials = [
+            $loginField => $request->login,
+            'password' => $request->password
+        ];
+
+        if (!Auth::attempt($credentials)) {
+            return response()->json(['message' => 'Kredensial salah.'], 401);
         }
 
-        $user = User::where('email', $request['email'])->firstOrFail();
+        $user = User::where($loginField, $request->login)->firstOrFail();
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
