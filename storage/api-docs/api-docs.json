@@ -506,6 +506,210 @@
                 ]
             }
         },
+        "/api/motorinci/brands": {
+            "get": {
+                "tags": [
+                    "Motorinci Brands"
+                ],
+                "summary": "Mendapatkan daftar brand motorinci",
+                "operationId": "getMotorinciBrandsList",
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Motorinci Brands"
+                ],
+                "summary": "Create a new motorinci brand",
+                "operationId": "storeMotorinciBrand",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Honda"
+                                    },
+                                    "desc": {
+                                        "type": "string",
+                                        "example": "Produsen sepeda motor terbesar di dunia."
+                                    },
+                                    "icon": {
+                                        "description": "Icon file",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "image": {
+                                        "description": "Image file",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/201_Created"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403_Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/brands/{id}": {
+            "get": {
+                "tags": [
+                    "Motorinci Brands"
+                ],
+                "summary": "Get a single motorinci brand by ID",
+                "operationId": "getMotorinciBrandById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motorinci brand ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Motorinci Brands"
+                ],
+                "summary": "Update an existing motorinci brand",
+                "description": "Gunakan method POST dengan _method=PUT di dalam form-data untuk request PUT/PATCH.",
+                "operationId": "updateMotorinciBrand",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motorinci brand ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "_method": {
+                                        "type": "string",
+                                        "example": "PUT"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Yamaha"
+                                    },
+                                    "desc": {
+                                        "type": "string",
+                                        "example": "Pabrikan asal Jepang."
+                                    },
+                                    "icon": {
+                                        "description": "New icon file (optional)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "image": {
+                                        "description": "New image file (optional)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403_Forbidden"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Motorinci Brands"
+                ],
+                "summary": "Delete a motorinci brand",
+                "operationId": "deleteMotorinciBrand",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motorinci brand ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204_NoContent"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403_Forbidden"
+                    }
+                }
+            }
+        },
         "/api/motorinci/categories": {
             "get": {
                 "tags": [
@@ -736,6 +940,10 @@
             },
             "ValidationErrorJsonResponse": {
                 "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
                     "message": {
                         "type": "string",
                         "example": "Data yang diberikan tidak valid."
@@ -843,6 +1051,10 @@
         {
             "name": "Authentication",
             "description": "Authentication"
+        },
+        {
+            "name": "Motorinci Brands",
+            "description": "Motorinci Brands"
         },
         {
             "name": "Motorinci Categories",
