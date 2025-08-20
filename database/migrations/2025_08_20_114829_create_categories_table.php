@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('username')->unique()->after('name');
+        Schema::create('motorinci_categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->text('desc')->nullable();
+            $table->string('image')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('username');
-        });
+        Schema::dropIfExists('motorinci_categories');
     }
 };

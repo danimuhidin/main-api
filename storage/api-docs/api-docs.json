@@ -505,13 +505,332 @@
                     }
                 ]
             }
+        },
+        "/api/motorinci/categories": {
+            "get": {
+                "tags": [
+                    "Motorinci Categories"
+                ],
+                "summary": "Mendapatkan daftar kategori motorinci",
+                "operationId": "getMotorinciCategoriesList",
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Motorinci Categories"
+                ],
+                "summary": "Create a new motorinci category",
+                "operationId": "storeMotorinciCategory",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "desc"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Sport"
+                                    },
+                                    "desc": {
+                                        "type": "string",
+                                        "example": "Category for sport bikes"
+                                    },
+                                    "image": {
+                                        "description": "Image file",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/201_Created"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403_Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/categories/{id}": {
+            "get": {
+                "tags": [
+                    "Motorinci Categories"
+                ],
+                "summary": "Get a single motorinci category by ID",
+                "operationId": "getMotorinciCategoryById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motorinci category ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Motorinci Categories"
+                ],
+                "summary": "Update an existing motorinci category",
+                "description": "Gunakan method POST dengan _method=PUT di dalam form-data untuk request PUT/PATCH.",
+                "operationId": "updateMotorinciCategory",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motorinci category ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "_method": {
+                                        "type": "string",
+                                        "example": "PUT"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Cruiser"
+                                    },
+                                    "desc": {
+                                        "type": "string",
+                                        "example": "Category for cruiser bikes"
+                                    },
+                                    "image": {
+                                        "description": "New image file (optional)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403_Forbidden"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Motorinci Categories"
+                ],
+                "summary": "Delete a motorinci category",
+                "operationId": "deleteMotorinciCategory",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motorinci category ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204_NoContent"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403_Forbidden"
+                    }
+                }
+            }
         }
     },
     "components": {
+        "schemas": {
+            "SuccessJsonResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Operasi berhasil"
+                    },
+                    "data": {
+                        "type": "object",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ErrorJsonResponse": {
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Terjadi kesalahan"
+                    }
+                },
+                "type": "object"
+            },
+            "ValidationErrorJsonResponse": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Data yang diberikan tidak valid."
+                    },
+                    "errors": {
+                        "type": "object",
+                        "example": {
+                            "field_name": [
+                                "Pesan error."
+                            ]
+                        }
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "responses": {
+            "200_Success": {
+                "description": "Operasi berhasil dieksekusi.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/SuccessJsonResponse"
+                        }
+                    }
+                }
+            },
+            "201_Created": {
+                "description": "Sumber daya berhasil dibuat.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/SuccessJsonResponse"
+                        }
+                    }
+                }
+            },
+            "204_NoContent": {
+                "description": "Operasi berhasil tetapi tidak ada konten untuk dikembalikan."
+            },
+            "401_Unauthorized": {
+                "description": "Autentikasi gagal. Token tidak valid atau tidak ada.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorJsonResponse"
+                        }
+                    }
+                }
+            },
+            "403_Forbidden": {
+                "description": "Akses ditolak. Anda tidak memiliki izin.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorJsonResponse"
+                        }
+                    }
+                }
+            },
+            "404_NotFound": {
+                "description": "Sumber daya yang diminta tidak ditemukan.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorJsonResponse"
+                        }
+                    }
+                }
+            },
+            "422_UnprocessableContent": {
+                "description": "Validasi gagal.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ValidationErrorJsonResponse"
+                        }
+                    }
+                }
+            },
+            "500_InternalServerError": {
+                "description": "Terjadi error di sisi server.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/ErrorJsonResponse"
+                        }
+                    }
+                }
+            }
+        },
         "securitySchemes": {
             "sanctum": {
                 "type": "http",
-                "bearerFormat": "JWT",
+                "description": "Masukkan token Bearer Anda. Contoh: 'Bearer 1|abcdef...'",
                 "scheme": "bearer"
             }
         }
@@ -524,6 +843,15 @@
         {
             "name": "Authentication",
             "description": "Authentication"
+        },
+        {
+            "name": "Motorinci Categories",
+            "description": "Motorinci Categories"
+        }
+    ],
+    "security": [
+        {
+            "sanctum": []
         }
     ]
 }
