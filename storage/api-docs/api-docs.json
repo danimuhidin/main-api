@@ -506,6 +506,198 @@
                 ]
             }
         },
+        "/api/motorinci/available-colors": {
+            "get": {
+                "tags": [
+                    "Motorinci Available Colors"
+                ],
+                "summary": "Mendapatkan daftar warna yang tersedia untuk motor",
+                "operationId": "getMotorinciAvailableColorsList",
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Motorinci Available Colors"
+                ],
+                "summary": "Menambahkan warna baru untuk sebuah motor",
+                "operationId": "storeMotorinciAvailableColor",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "motor_id",
+                                    "color_id"
+                                ],
+                                "properties": {
+                                    "motor_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "color_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "image": {
+                                        "description": "Gambar motor dengan warna terkait",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/201_Created"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/available-colors/{id}": {
+            "get": {
+                "tags": [
+                    "Motorinci Available Colors"
+                ],
+                "summary": "Mendapatkan detail warna tersedia berdasarkan ID",
+                "operationId": "getMotorinciAvailableColorById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Available Color ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Motorinci Available Colors"
+                ],
+                "summary": "Update data warna tersedia",
+                "description": "Gunakan method POST dengan _method=PUT di dalam form-data untuk request PUT/PATCH.",
+                "operationId": "updateMotorinciAvailableColor",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Available Color ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "_method": {
+                                        "type": "string",
+                                        "example": "PUT"
+                                    },
+                                    "motor_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "color_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "image": {
+                                        "description": "Gambar baru (opsional)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Motorinci Available Colors"
+                ],
+                "summary": "Menghapus data warna tersedia",
+                "operationId": "deleteMotorinciAvailableColor",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Available Color ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete successful"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    }
+                }
+            }
+        },
         "/api/motorinci/brands": {
             "get": {
                 "tags": [
@@ -904,6 +1096,1762 @@
                     }
                 }
             }
+        },
+        "/api/motorinci/colors": {
+            "get": {
+                "tags": [
+                    "Motorinci Colors"
+                ],
+                "summary": "Mendapatkan daftar warna",
+                "operationId": "motorincigetColorsList",
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Motorinci Colors"
+                ],
+                "summary": "Membuat warna baru",
+                "operationId": "motorincistoreColor",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "hex"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Merah"
+                                    },
+                                    "hex": {
+                                        "type": "string",
+                                        "example": "#FF0000"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/201_Created"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/colors/{id}": {
+            "get": {
+                "tags": [
+                    "Motorinci Colors"
+                ],
+                "summary": "Mendapatkan satu warna berdasarkan ID",
+                "operationId": "motorincigetColorById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Color ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Motorinci Colors"
+                ],
+                "summary": "Memperbarui warna yang ada",
+                "operationId": "motorinciupdateColor",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Color ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Biru Muda"
+                                    },
+                                    "hex": {
+                                        "type": "string",
+                                        "example": "#87CEEB"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Motorinci Colors"
+                ],
+                "summary": "Menghapus warna",
+                "operationId": "motorincideleteColor",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Color ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204_NoContent"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/feature-items": {
+            "get": {
+                "tags": [
+                    "Motorinci Feature Items"
+                ],
+                "summary": "Mendapatkan daftar item fitur motorinci",
+                "operationId": "getMotorinciFeatureItemsList",
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Motorinci Feature Items"
+                ],
+                "summary": "Membuat item fitur motorinci baru",
+                "operationId": "storeMotorinciFeatureItem",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Hemat Bahan Bakar"
+                                    },
+                                    "desc": {
+                                        "type": "string",
+                                        "example": "Sistem injeksi canggih yang membuat konsumsi bahan bakar lebih efisien."
+                                    },
+                                    "icon": {
+                                        "description": "Icon file",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/201_Created"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403_Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/feature-items/{id}": {
+            "get": {
+                "tags": [
+                    "Motorinci Feature Items"
+                ],
+                "summary": "Mendapatkan satu item fitur motorinci berdasarkan ID",
+                "operationId": "getMotorinciFeatureItemById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motorinci feature item ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Motorinci Feature Items"
+                ],
+                "summary": "Memperbarui item fitur motorinci yang sudah ada",
+                "description": "Gunakan method POST dengan _method=PUT di dalam form-data untuk request PUT/PATCH.",
+                "operationId": "updateMotorinciFeatureItem",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motorinci feature item ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "_method": {
+                                        "type": "string",
+                                        "example": "PUT"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Kunci Canggih"
+                                    },
+                                    "desc": {
+                                        "type": "string",
+                                        "example": "Sistem kunci pintar dengan alarm terintegrasi."
+                                    },
+                                    "icon": {
+                                        "description": "New icon file (optional)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403_Forbidden"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Motorinci Feature Items"
+                ],
+                "summary": "Menghapus item fitur motorinci",
+                "operationId": "deleteMotorinciFeatureItem",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motorinci feature item ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204_NoContent"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403_Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/motors": {
+            "get": {
+                "tags": [
+                    "Motorinci Motors"
+                ],
+                "summary": "Mendapatkan daftar motor",
+                "operationId": "getMotorinciMotorsList",
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Motorinci Motors"
+                ],
+                "summary": "Membuat data motor baru",
+                "operationId": "storeMotorinciMotor",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "brand_id",
+                                    "category_id",
+                                    "year_model",
+                                    "engine_cc"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Vario 160"
+                                    },
+                                    "brand_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "year_model": {
+                                        "type": "integer",
+                                        "example": 2024
+                                    },
+                                    "engine_cc": {
+                                        "type": "integer",
+                                        "example": 160
+                                    },
+                                    "low_price": {
+                                        "type": "integer",
+                                        "example": 27000000
+                                    },
+                                    "up_price": {
+                                        "type": "integer",
+                                        "example": 29000000
+                                    },
+                                    "desc": {
+                                        "type": "string",
+                                        "example": "Skutik populer dari Honda."
+                                    },
+                                    "brochure_url": {
+                                        "type": "string",
+                                        "format": "url",
+                                        "example": "https://www.example.com/brochure/vario-160.pdf"
+                                    },
+                                    "sparepart_url": {
+                                        "type": "string",
+                                        "format": "url",
+                                        "example": "https://www.example.com/sparepart/vario-160"
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "is_featured": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/201_Created"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/motors/{id}": {
+            "get": {
+                "tags": [
+                    "Motorinci Motors"
+                ],
+                "summary": "Mendapatkan detail motor berdasarkan ID",
+                "operationId": "getMotorinciMotorById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motor ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Motorinci Motors"
+                ],
+                "summary": "Update data motor yang sudah ada",
+                "operationId": "updateMotorinciMotor",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motor ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Vario 160 ABS"
+                                    },
+                                    "brand_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "year_model": {
+                                        "type": "integer",
+                                        "example": 2025
+                                    },
+                                    "engine_cc": {
+                                        "type": "integer",
+                                        "example": 160
+                                    },
+                                    "brochure_url": {
+                                        "type": "string",
+                                        "format": "url",
+                                        "example": "https://www.new-url.com/brochure.pdf"
+                                    },
+                                    "sparepart_url": {
+                                        "type": "string",
+                                        "format": "url",
+                                        "example": "https://www.new-url.com/sparepart"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Motorinci Motors"
+                ],
+                "summary": "Menghapus data motor",
+                "operationId": "deleteMotorinciMotor",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motor ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete successful"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/motor-features": {
+            "get": {
+                "tags": [
+                    "Motorinci Motor Features"
+                ],
+                "summary": "Mendapatkan daftar fitur yang terpasang di motor",
+                "operationId": "getMotorinciMotorFeaturesList",
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Motorinci Motor Features"
+                ],
+                "summary": "Menambahkan fitur baru ke sebuah motor",
+                "operationId": "storeMotorinciMotorFeature",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "motor_id",
+                                    "feature_item_id"
+                                ],
+                                "properties": {
+                                    "motor_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "feature_item_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/201_Created"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/motor-features/{id}": {
+            "get": {
+                "tags": [
+                    "Motorinci Motor Features"
+                ],
+                "summary": "Mendapatkan detail fitur motor berdasarkan ID",
+                "operationId": "getMotorinciMotorFeatureById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motor Feature ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Motorinci Motor Features"
+                ],
+                "summary": "Update data fitur motor",
+                "operationId": "updateMotorinciMotorFeature",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motor Feature ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "motor_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "feature_item_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Motorinci Motor Features"
+                ],
+                "summary": "Menghapus data fitur dari motor",
+                "operationId": "deleteMotorinciMotorFeature",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motor Feature ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete successful"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/motor-images": {
+            "get": {
+                "tags": [
+                    "Motorinci Motor Images"
+                ],
+                "summary": "Mendapatkan daftar gambar motor",
+                "operationId": "getMotorinciMotorImagesList",
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Motorinci Motor Images"
+                ],
+                "summary": "Menambahkan gambar baru untuk sebuah motor",
+                "operationId": "storeMotorinciMotorImage",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "motor_id",
+                                    "image"
+                                ],
+                                "properties": {
+                                    "motor_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "image": {
+                                        "description": "File gambar motor",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "desc": {
+                                        "type": "string",
+                                        "example": "Tampak depan"
+                                    },
+                                    "order": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/201_Created"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/motor-images/{id}": {
+            "get": {
+                "tags": [
+                    "Motorinci Motor Images"
+                ],
+                "summary": "Mendapatkan detail gambar motor berdasarkan ID",
+                "operationId": "getMotorinciMotorImageById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motor Image ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Motorinci Motor Images"
+                ],
+                "summary": "Update data gambar motor",
+                "description": "Gunakan method POST dengan _method=PUT di dalam form-data untuk request PUT/PATCH.",
+                "operationId": "updateMotorinciMotorImage",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motor Image ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "_method": {
+                                        "type": "string",
+                                        "example": "PUT"
+                                    },
+                                    "motor_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "image": {
+                                        "description": "File gambar baru (opsional)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "desc": {
+                                        "type": "string",
+                                        "example": "Tampak samping kiri"
+                                    },
+                                    "order": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Motorinci Motor Images"
+                ],
+                "summary": "Menghapus data gambar motor",
+                "operationId": "deleteMotorinciMotorImage",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motor Image ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete successful"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/motor-specifications": {
+            "get": {
+                "tags": [
+                    "Motorinci Motor Specifications"
+                ],
+                "summary": "Mendapatkan daftar spesifikasi motor",
+                "operationId": "getMotorinciMotorSpecificationsList",
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Motorinci Motor Specifications"
+                ],
+                "summary": "Menambahkan spesifikasi baru ke sebuah motor",
+                "operationId": "storeMotorinciMotorSpecification",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "motor_id",
+                                    "specification_item_id",
+                                    "value"
+                                ],
+                                "properties": {
+                                    "motor_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "specification_item_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "value": {
+                                        "type": "string",
+                                        "example": "155cc"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/201_Created"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/motor-specifications/{id}": {
+            "get": {
+                "tags": [
+                    "Motorinci Motor Specifications"
+                ],
+                "summary": "Mendapatkan detail spesifikasi motor berdasarkan ID",
+                "operationId": "getMotorinciMotorSpecificationById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motor Specification ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Motorinci Motor Specifications"
+                ],
+                "summary": "Update data spesifikasi motor",
+                "operationId": "updateMotorinciMotorSpecification",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motor Specification ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "motor_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "specification_item_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "value": {
+                                        "type": "string",
+                                        "example": "160cc"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Motorinci Motor Specifications"
+                ],
+                "summary": "Menghapus data spesifikasi dari motor",
+                "operationId": "deleteMotorinciMotorSpecification",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motor Specification ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Delete successful"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/reviews": {
+            "get": {
+                "tags": [
+                    "Motorinci Reviews"
+                ],
+                "summary": "Mendapatkan daftar ulasan motorinci",
+                "operationId": "getMotorinciReviewsList",
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Motorinci Reviews"
+                ],
+                "summary": "Membuat ulasan motorinci baru",
+                "operationId": "storeMotorinciReview",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "motor_id",
+                                    "reviewer_name",
+                                    "reviewer_email",
+                                    "rating"
+                                ],
+                                "properties": {
+                                    "motor_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "reviewer_name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "reviewer_email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john.doe@example.com"
+                                    },
+                                    "rating": {
+                                        "description": "Nilai rating dari 1 sampai 5",
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "comment": {
+                                        "type": "string",
+                                        "example": "Motor ini sangat bagus dan hemat bahan bakar."
+                                    },
+                                    "is_approved": {
+                                        "description": "Status persetujuan ulasan",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/201_Created"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/reviews/{id}": {
+            "get": {
+                "tags": [
+                    "Motorinci Reviews"
+                ],
+                "summary": "Mendapatkan satu ulasan motorinci berdasarkan ID",
+                "operationId": "getMotorinciReviewById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motorinci review ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Motorinci Reviews"
+                ],
+                "summary": "Memperbarui ulasan motorinci yang sudah ada",
+                "operationId": "updateMotorinciReview",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motorinci review ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "reviewer_name": {
+                                        "type": "string",
+                                        "example": "Jane Doe"
+                                    },
+                                    "reviewer_email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "jane.doe@example.com"
+                                    },
+                                    "rating": {
+                                        "type": "integer",
+                                        "example": 4
+                                    },
+                                    "comment": {
+                                        "type": "string",
+                                        "example": "Cukup baik, tapi kurang responsif."
+                                    },
+                                    "is_approved": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Motorinci Reviews"
+                ],
+                "summary": "Menghapus ulasan motorinci",
+                "operationId": "deleteMotorinciReview",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motorinci review ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204_NoContent"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/specification-groups": {
+            "get": {
+                "tags": [
+                    "Motorinci Specification Groups"
+                ],
+                "summary": "Mendapatkan daftar grup spesifikasi motorinci",
+                "operationId": "getMotorinciSpecificationGroupsList",
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Motorinci Specification Groups"
+                ],
+                "summary": "Membuat grup spesifikasi motorinci baru",
+                "operationId": "storeMotorinciSpecificationGroup",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Dimensi"
+                                    },
+                                    "order": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/201_Created"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403_Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/specification-groups/{id}": {
+            "get": {
+                "tags": [
+                    "Motorinci Specification Groups"
+                ],
+                "summary": "Mendapatkan satu grup spesifikasi motorinci berdasarkan ID",
+                "operationId": "getMotorinciSpecificationGroupById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motorinci specification group ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Motorinci Specification Groups"
+                ],
+                "summary": "Memperbarui grup spesifikasi motorinci yang sudah ada",
+                "operationId": "updateMotorinciSpecificationGroup",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motorinci specification group ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Rangka & Kaki-kaki"
+                                    },
+                                    "order": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403_Forbidden"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Motorinci Specification Groups"
+                ],
+                "summary": "Menghapus grup spesifikasi motorinci",
+                "operationId": "deleteMotorinciSpecificationGroup",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motorinci specification group ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204_NoContent"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403_Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/specification-items": {
+            "get": {
+                "tags": [
+                    "Motorinci Specification Items"
+                ],
+                "summary": "Mendapatkan daftar item spesifikasi motorinci",
+                "operationId": "getMotorinciSpecificationItemsList",
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Motorinci Specification Items"
+                ],
+                "summary": "Membuat item spesifikasi motorinci baru",
+                "operationId": "storeMotorinciSpecificationItem",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "required": [
+                                    "specification_group_id",
+                                    "name"
+                                ],
+                                "properties": {
+                                    "specification_group_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Panjang x Lebar x Tinggi"
+                                    },
+                                    "unit": {
+                                        "type": "string",
+                                        "example": "mm"
+                                    },
+                                    "desc": {
+                                        "type": "string",
+                                        "example": "Ukuran dimensi total motor."
+                                    },
+                                    "order": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/201_Created"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403_Forbidden"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/specification-items/{id}": {
+            "get": {
+                "tags": [
+                    "Motorinci Specification Items"
+                ],
+                "summary": "Mendapatkan satu item spesifikasi motorinci berdasarkan ID",
+                "operationId": "getMotorinciSpecificationItemById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motorinci specification item ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Motorinci Specification Items"
+                ],
+                "summary": "Memperbarui item spesifikasi motorinci yang sudah ada",
+                "operationId": "updateMotorinciSpecificationItem",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motorinci specification item ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Tinggi Tempat Duduk"
+                                    },
+                                    "unit": {
+                                        "type": "string",
+                                        "example": "mm"
+                                    },
+                                    "desc": {
+                                        "type": "string",
+                                        "example": "Jarak dari jok ke tanah."
+                                    },
+                                    "order": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403_Forbidden"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Motorinci Specification Items"
+                ],
+                "summary": "Menghapus item spesifikasi motorinci",
+                "operationId": "deleteMotorinciSpecificationItem",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Motorinci specification item ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "$ref": "#/components/responses/204_NoContent"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/403_Forbidden"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1053,12 +3001,52 @@
             "description": "Authentication"
         },
         {
+            "name": "Motorinci Available Colors",
+            "description": "Motorinci Available Colors"
+        },
+        {
             "name": "Motorinci Brands",
             "description": "Motorinci Brands"
         },
         {
             "name": "Motorinci Categories",
             "description": "Motorinci Categories"
+        },
+        {
+            "name": "Motorinci Colors",
+            "description": "Motorinci Colors"
+        },
+        {
+            "name": "Motorinci Feature Items",
+            "description": "Motorinci Feature Items"
+        },
+        {
+            "name": "Motorinci Motors",
+            "description": "Motorinci Motors"
+        },
+        {
+            "name": "Motorinci Motor Features",
+            "description": "Motorinci Motor Features"
+        },
+        {
+            "name": "Motorinci Motor Images",
+            "description": "Motorinci Motor Images"
+        },
+        {
+            "name": "Motorinci Motor Specifications",
+            "description": "Motorinci Motor Specifications"
+        },
+        {
+            "name": "Motorinci Reviews",
+            "description": "Motorinci Reviews"
+        },
+        {
+            "name": "Motorinci Specification Groups",
+            "description": "Motorinci Specification Groups"
+        },
+        {
+            "name": "Motorinci Specification Items",
+            "description": "Motorinci Specification Items"
         }
     ],
     "security": [
