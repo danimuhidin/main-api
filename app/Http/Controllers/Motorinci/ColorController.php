@@ -82,7 +82,7 @@ class ColorController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|unique:colors,name',
+            'name' => 'required|string|unique:motorinci_colors,name',
             'hex' => 'required|string|regex:/^#[a-f0-9]{6}$/i',
         ]);
 
@@ -178,7 +178,7 @@ class ColorController extends Controller
             'name' => [
                 'required',
                 'string',
-                Rule::unique('colors', 'name')->ignore($color->id),
+                Rule::unique('motorinci_colors', 'name')->ignore($color->id),
             ],
             'hex' => 'required|string|regex:/^#[a-f0-9]{6}$/i',
         ]);
