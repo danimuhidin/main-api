@@ -34,7 +34,7 @@ class SpecificationItemController extends Controller
             $query->take($limit);
         }
 
-        $specificationItems = $query->get();
+        $specificationItems = $query->with('specificationGroup')->get();
 
         return response()->json([
             'message' => 'Motorinci specification items retrieved successfully with pagination',
@@ -137,7 +137,7 @@ class SpecificationItemController extends Controller
      */
     public function show($id)
     {
-        $specificationItem = SpecificationItem::find($id);
+        $specificationItem = SpecificationItem::with('specificationGroup')->find($id);
         if (!$specificationItem) {
             return response()->json([
                 'message' => 'Motorinci specification item not found'
