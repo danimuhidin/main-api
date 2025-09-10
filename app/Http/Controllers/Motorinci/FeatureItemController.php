@@ -12,7 +12,7 @@ class FeatureItemController extends Controller
 {
     /**
      * @OA\Get(
-     * path="/api/motorinci/feature-items",
+     * path="/api/motorinci/features",
      * operationId="getMotorinciFeatureItemsList",
      * tags={"Motorinci Feature Items"},
      * summary="Mendapatkan daftar item fitur motorinci",
@@ -52,7 +52,7 @@ class FeatureItemController extends Controller
 
     /**
      * @OA\Post(
-     * path="/api/motorinci/feature-items",
+     * path="/api/motorinci/features",
      * operationId="storeMotorinciFeatureItem",
      * tags={"Motorinci Feature Items"},
      * summary="Membuat item fitur motorinci baru",
@@ -97,7 +97,7 @@ class FeatureItemController extends Controller
 
         $iconPath = null;
         if ($request->hasFile('icon')) {
-            $iconPath = $request->file('icon')->store('motorinci/feature-items/icons', 'public');
+            $iconPath = $request->file('icon')->store('motorinci/features/icons', 'public');
         }
 
         $featureItem = FeatureItem::create([
@@ -116,7 +116,7 @@ class FeatureItemController extends Controller
 
     /**
      * @OA\Get(
-     * path="/api/motorinci/feature-items/{id}",
+     * path="/api/motorinci/features/{id}",
      * operationId="getMotorinciFeatureItemById",
      * tags={"Motorinci Feature Items"},
      * summary="Mendapatkan satu item fitur motorinci berdasarkan ID",
@@ -153,7 +153,7 @@ class FeatureItemController extends Controller
 
     /**
      * @OA\Post(
-     * path="/api/motorinci/feature-items/{id}",
+     * path="/api/motorinci/features/{id}",
      * operationId="updateMotorinciFeatureItem",
      * tags={"Motorinci Feature Items"},
      * summary="Memperbarui item fitur motorinci yang sudah ada",
@@ -208,7 +208,7 @@ class FeatureItemController extends Controller
             if ($featureItem->icon) {
                 Storage::disk('public')->delete($featureItem->icon);
             }
-            $iconPath = $request->file('icon')->store('motorinci/feature-items/icons', 'public');
+            $iconPath = $request->file('icon')->store('motorinci/features/icons', 'public');
         }
 
         $featureItem->update([
@@ -227,7 +227,7 @@ class FeatureItemController extends Controller
 
     /**
      * @OA\Delete(
-     * path="/api/motorinci/feature-items/{id}",
+     * path="/api/motorinci/features/{id}",
      * operationId="deleteMotorinciFeatureItem",
      * tags={"Motorinci Feature Items"},
      * summary="Menghapus item fitur motorinci",

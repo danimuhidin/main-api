@@ -1268,7 +1268,7 @@
                 }
             }
         },
-        "/api/motorinci/feature-items": {
+        "/api/motorinci/features": {
             "get": {
                 "tags": [
                     "Motorinci Feature Items"
@@ -1334,7 +1334,7 @@
                 }
             }
         },
-        "/api/motorinci/feature-items/{id}": {
+        "/api/motorinci/features/{id}": {
             "get": {
                 "tags": [
                     "Motorinci Feature Items"
