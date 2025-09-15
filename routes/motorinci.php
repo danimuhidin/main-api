@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\GenerateController;
 use App\Http\Controllers\Motorinci\AvailableColorController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -15,7 +16,11 @@ use App\Http\Controllers\Motorinci\ReviewController;
 use App\Http\Controllers\Motorinci\SpecificationGroupController;
 use App\Http\Controllers\Motorinci\SpecificationItemController;
 
+Route::get('/motorinci-generate', [App\Http\Controllers\Motorinci\AiController::class, 'generate']);
+
 Route::middleware('auth:sanctum')->prefix('motorinci')->group(function () {
+    Route::apiResource('generate', GenerateController::class);
+
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('brands', BrandController::class);
     Route::apiResource('colors', ColorController::class);

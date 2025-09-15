@@ -54,6 +54,153 @@
                 }
             }
         },
+        "/api/motorinci/generate": {
+            "get": {
+                "tags": [
+                    "Motorinci Generate"
+                ],
+                "summary": "Mendapatkan daftar generate motorinci",
+                "operationId": "getMotorinciGenerate",
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Motorinci Generate"
+                ],
+                "summary": "Menyimpan data generate motorinci baru",
+                "description": "Membuat entri data generate motorinci baru berdasarkan JSON yang dikirim.",
+                "operationId": "storeMotorinciGenerate",
+                "requestBody": {
+                    "description": "Payload data motor",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "brand_id",
+                                    "category_id",
+                                    "year_model",
+                                    "engine_cc",
+                                    "low_price",
+                                    "up_price",
+                                    "specifications"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Tiger Revo"
+                                    },
+                                    "brand_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "year_model": {
+                                        "type": "integer",
+                                        "example": 2012
+                                    },
+                                    "engine_cc": {
+                                        "type": "string",
+                                        "example": "200cc"
+                                    },
+                                    "low_price": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "example": 25000000
+                                    },
+                                    "up_price": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "example": 26500000
+                                    },
+                                    "desc": {
+                                        "type": "string",
+                                        "example": "Salah satu motor sport touring legendaris..."
+                                    },
+                                    "colors": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            2,
+                                            3
+                                        ]
+                                    },
+                                    "features": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "example": [
+                                            1,
+                                            9
+                                        ]
+                                    },
+                                    "specifications": {
+                                        "type": "array",
+                                        "items": {
+                                            "required": [
+                                                "spec_item_id",
+                                                "value"
+                                            ],
+                                            "properties": {
+                                                "spec_item_id": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "value": {
+                                                    "type": "string",
+                                                    "example": "4 Langkah, OHC, Silinder Tunggal"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Operasi berhasil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Data motor berhasil diterima!"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Data tidak valid"
+                    }
+                }
+            }
+        },
         "/api/users": {
             "get": {
                 "tags": [
@@ -2999,6 +3146,10 @@
         {
             "name": "Authentication",
             "description": "Authentication"
+        },
+        {
+            "name": "Motorinci Generate",
+            "description": "Motorinci Generate"
         },
         {
             "name": "Motorinci Available Colors",
