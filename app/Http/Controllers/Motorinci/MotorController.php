@@ -27,7 +27,7 @@ class MotorController extends Controller
         $limit = $request->input('limit');
 
         // Menggunakan eager loading untuk mengambil relasi brand dan category
-        $query = Motor::with(['brand', 'category']);
+        $query = Motor::with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup']);
 
         if ($offset) {
             $query->skip($offset);
@@ -123,7 +123,7 @@ class MotorController extends Controller
      */
     public function show($id)
     {
-        $motor = Motor::with(['brand', 'category'])->find($id);
+        $motor = Motor::with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup'])->find($id);
 
         if (!$motor) {
             return response()->json(['message' => 'Motorinci motor not found'], 404);
