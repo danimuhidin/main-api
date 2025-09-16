@@ -17,6 +17,7 @@ use App\Http\Controllers\Motorinci\SpecificationGroupController;
 use App\Http\Controllers\Motorinci\SpecificationItemController;
 
 Route::get('/motorinci-generate', [App\Http\Controllers\Motorinci\AiController::class, 'generate']);
+Route::get('/motorinci-gen/{id}', [App\Http\Controllers\Motorinci\AiController::class, 'gen']);
 
 Route::middleware('auth:sanctum')->prefix('motorinci')->group(function () {
     Route::apiResource('generate', GenerateController::class);
