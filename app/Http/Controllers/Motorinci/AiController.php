@@ -335,7 +335,6 @@ class AiController extends Controller
                 $jsonString = $matches[0];
                 $data = json_decode($jsonString, true);
 
-                dd($data);
                 if (json_last_error() !== JSON_ERROR_NONE) {
                     throw new Exception("Gagal mem-parsing JSON. Error: " . json_last_error_msg());
                 }
