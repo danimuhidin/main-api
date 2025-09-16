@@ -36,15 +36,6 @@ class AiController extends Controller
 
                 Data Master Referensi:
                 {
-                \"data_brand\": [ { \"id\": 1, \"name\": \"Honda\" }, ... ],
-                \"data_category\": [ { \"id\": 1, \"name\": \"Sport Bike\" }, ... ],
-                \"data_color\": [ { \"id\": 1, \"name\": \"Merah\" }, ... ],
-                \"data_feature\": [ { \"id\": 1, \"name\": \"Secure Key Shutter\" }, ... ],
-                \"data_specification_item\": [ { \"id\": 2, \"name\": \"Tipe Mesin\" }, ... ]
-                }
-
-                Struktur JSON Output yang Diinginkan:
-                {
                 \"data_brand\": [
                 { \"id\": 1, \"name\": \"Honda\" },
                 { \"id\": 2, \"name\": \"Yamaha\" },
@@ -97,6 +88,23 @@ class AiController extends Controller
                 \"data_specification_item\": [
                 { \"id\": 2, \"name\": \"Tipe Mesin\" }, { \"id\": 3, \"name\": \"Sistem Pendingin\" }, { \"id\": 4, \"name\": \"Konfigurasi Katup\" }, { \"id\": 5, \"name\": \"Jumlah Silinder\" }, { \"id\": 6, \"name\": \"Konfigurasi Silinder\" }, { \"id\": 7, \"name\": \"Diameter x Langkah\" }, { \"id\": 8, \"name\": \"Rasio Kompresi\" }, { \"id\": 9, \"name\": \"Daya Maksimum\" }, { \"id\": 10, \"name\": \"Torsi Maksimum\" }, { \"id\": 11, \"name\": \"Sistem Bahan Bakar\" }, { \"id\": 12, \"name\": \"Tipe Kopling\" }, { \"id\": 13, \"name\": \"Tipe Transmisi\" }, { \"id\": 14, \"name\": \"Jumlah Percepatan\" }, { \"id\": 15, \"name\": \"Sistem Starter\" }, { \"id\": 16, \"name\": \"Kapasitas Oli Mesin\" }, { \"id\": 17, \"name\": \"Tipe Rangka\" }, { \"id\": 18, \"name\": \"Panjang x Lebar x Tinggi\" }, { \"id\": 19, \"name\": \"Berat\" }, { \"id\": 20, \"name\": \"Suspensi Depan\" }, { \"id\": 21, \"name\": \"Suspensi Belakang\" }, { \"id\": 22, \"name\": \"Rem Depan\" }, { \"id\": 23, \"name\": \"Ukuran Piringan Depan\" }, { \"id\": 24, \"name\": \"Tipe Kaliper Depan\" }, { \"id\": 25, \"name\": \"Rem Belakang\" }, { \"id\": 26, \"name\": \"Ukuran Piringan Belakang\" }, { \"id\": 27, \"name\": \"Tipe Kaliper Belakang\" }, { \"id\": 28, \"name\": \"Sistem Pengereman Tambahan\" }, { \"id\": 29, \"name\": \"Channel ABS\" }, { \"id\": 30, \"name\": \"Ukuran Ban Depan\" }, { \"id\": 31, \"name\": \"Ukuran Ban Belakang\" }, { \"id\": 32, \"name\": \"Tipe Ban\" }, { \"id\": 33, \"name\": \"Tipe Velg\" }, { \"id\": 34, \"name\": \"Ukuran Velg Depan\" }, { \"id\": 35, \"name\": \"Ukuran Velg Belakang\" }, { \"id\": 36, \"name\": \"Sistem Pengapian\" }, { \"id\": 37, \"name\": \"Tipe Baterai/Aki\" }, { \"id\": 38, \"name\": \"Lampu Depan\" }, { \"id\": 39, \"name\": \"Lampu Belakang\" }, { \"id\": 40, \"name\": \"Lampu Sein\" }, { \"id\": 41, \"name\": \"Tipe Panel Meter\" }, { \"id\": 42, \"name\": \"Indikator Panel Meter\" }, { \"id\": 43, \"name\": \"Tangki Bahan Bakar\" }, { \"id\": 44, \"name\": \"Air Pendingin\" }, { \"id\": 45, \"name\": \"Bagasi\" }, { \"id\": 46, \"name\": \"Bahan Bakar\" }
                 ]
+                }
+
+                Struktur JSON Output yang Diinginkan:
+                {
+                    \"name\": \"Nama Motor Tanpa Brand\",
+                    \"brand_id\": 1,
+                    \"category_id\": 2,
+                    \"year_model\": 2012,
+                    \"engine_cc\": 200,
+                    \"low_price\": 28000000,
+                    \"up_price\": 30000000,
+                    \"desc\": \"Deskripsi singkat dan menarik tentang motor.\",
+                    \"colors\": [ /* Array of integer ID dari data_color */ ],
+                    \"features\": [ /* Array of integer ID dari data_feature */ ],
+                    \"specifications\": [
+                        { \"spec_item_id\": 2, \"value\": \"Nilai spesifikasi yang akurat\" }
+                    ]
                 }
 
                 Instruksi Penting:
@@ -240,15 +248,6 @@ class AiController extends Controller
 
                 Data Master Referensi:
                 {
-                \"data_brand\": [ { \"id\": 1, \"name\": \"Honda\" }, ... ],
-                \"data_category\": [ { \"id\": 1, \"name\": \"Sport Bike\" }, ... ],
-                \"data_color\": [ { \"id\": 1, \"name\": \"Merah\" }, ... ],
-                \"data_feature\": [ { \"id\": 1, \"name\": \"Secure Key Shutter\" }, ... ],
-                \"data_specification_item\": [ { \"id\": 2, \"name\": \"Tipe Mesin\" }, ... ]
-                }
-
-                Struktur JSON Output yang Diinginkan:
-                {
                 \"data_brand\": [
                 { \"id\": 1, \"name\": \"Honda\" },
                 { \"id\": 2, \"name\": \"Yamaha\" },
@@ -301,6 +300,23 @@ class AiController extends Controller
                 \"data_specification_item\": [
                 { \"id\": 2, \"name\": \"Tipe Mesin\" }, { \"id\": 3, \"name\": \"Sistem Pendingin\" }, { \"id\": 4, \"name\": \"Konfigurasi Katup\" }, { \"id\": 5, \"name\": \"Jumlah Silinder\" }, { \"id\": 6, \"name\": \"Konfigurasi Silinder\" }, { \"id\": 7, \"name\": \"Diameter x Langkah\" }, { \"id\": 8, \"name\": \"Rasio Kompresi\" }, { \"id\": 9, \"name\": \"Daya Maksimum\" }, { \"id\": 10, \"name\": \"Torsi Maksimum\" }, { \"id\": 11, \"name\": \"Sistem Bahan Bakar\" }, { \"id\": 12, \"name\": \"Tipe Kopling\" }, { \"id\": 13, \"name\": \"Tipe Transmisi\" }, { \"id\": 14, \"name\": \"Jumlah Percepatan\" }, { \"id\": 15, \"name\": \"Sistem Starter\" }, { \"id\": 16, \"name\": \"Kapasitas Oli Mesin\" }, { \"id\": 17, \"name\": \"Tipe Rangka\" }, { \"id\": 18, \"name\": \"Panjang x Lebar x Tinggi\" }, { \"id\": 19, \"name\": \"Berat\" }, { \"id\": 20, \"name\": \"Suspensi Depan\" }, { \"id\": 21, \"name\": \"Suspensi Belakang\" }, { \"id\": 22, \"name\": \"Rem Depan\" }, { \"id\": 23, \"name\": \"Ukuran Piringan Depan\" }, { \"id\": 24, \"name\": \"Tipe Kaliper Depan\" }, { \"id\": 25, \"name\": \"Rem Belakang\" }, { \"id\": 26, \"name\": \"Ukuran Piringan Belakang\" }, { \"id\": 27, \"name\": \"Tipe Kaliper Belakang\" }, { \"id\": 28, \"name\": \"Sistem Pengereman Tambahan\" }, { \"id\": 29, \"name\": \"Channel ABS\" }, { \"id\": 30, \"name\": \"Ukuran Ban Depan\" }, { \"id\": 31, \"name\": \"Ukuran Ban Belakang\" }, { \"id\": 32, \"name\": \"Tipe Ban\" }, { \"id\": 33, \"name\": \"Tipe Velg\" }, { \"id\": 34, \"name\": \"Ukuran Velg Depan\" }, { \"id\": 35, \"name\": \"Ukuran Velg Belakang\" }, { \"id\": 36, \"name\": \"Sistem Pengapian\" }, { \"id\": 37, \"name\": \"Tipe Baterai/Aki\" }, { \"id\": 38, \"name\": \"Lampu Depan\" }, { \"id\": 39, \"name\": \"Lampu Belakang\" }, { \"id\": 40, \"name\": \"Lampu Sein\" }, { \"id\": 41, \"name\": \"Tipe Panel Meter\" }, { \"id\": 42, \"name\": \"Indikator Panel Meter\" }, { \"id\": 43, \"name\": \"Tangki Bahan Bakar\" }, { \"id\": 44, \"name\": \"Air Pendingin\" }, { \"id\": 45, \"name\": \"Bagasi\" }, { \"id\": 46, \"name\": \"Bahan Bakar\" }
                 ]
+                }
+
+                Struktur JSON Output yang Diinginkan:
+                {
+                    \"name\": \"Nama Motor Tanpa Brand\",
+                    \"brand_id\": 1,
+                    \"category_id\": 2,
+                    \"year_model\": 2012,
+                    \"engine_cc\": 200,
+                    \"low_price\": 28000000,
+                    \"up_price\": 30000000,
+                    \"desc\": \"Deskripsi singkat dan menarik tentang motor.\",
+                    \"colors\": [ /* Array of integer ID dari data_color */ ],
+                    \"features\": [ /* Array of integer ID dari data_feature */ ],
+                    \"specifications\": [
+                        { \"spec_item_id\": 2, \"value\": \"Nilai spesifikasi yang akurat\" }
+                    ]
                 }
 
                 Instruksi Penting:
