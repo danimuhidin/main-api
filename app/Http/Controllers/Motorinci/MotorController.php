@@ -219,4 +219,78 @@ class MotorController extends Controller
 
         return response()->json(['message' => 'Motorinci motor deleted successfully'], 200);
     }
+
+    
+    /**
+     * @OA\Get(
+     * path="/api/motorinci/search-motors",
+     * operationId="searchMotorinciMotors",
+     * tags={"Motorinci Motors"},
+     * summary="Mencari motor berdasarkan nama",
+     * @OA\Parameter(name="search", in="query", required=true, @OA\Schema(type="string")),
+     * @OA\Response(response=200, ref="#/components/responses/200_Success"),
+     * @OA\Response(response=401, ref="#/components/responses/401_Unauthorized")
+     * )
+     */
+
+    public function search(Request $request)
+    {
+        $search = $request->input('search');
+        if (!$search) {
+            return response()->json(['message' => 'Search query is required'], 400);
+        }
+
+        $motors = Motor::where('name', 'like', "%{$search}%")->get();
+
+        return response()->json($motors);
+    }
+
+    // make random 
+    /**
+     * @OA\Get(
+     * path="/api/motorinci/motors/random",
+     * operationId="getRandomMotorinciMotors",
+     * tags={"Motorinci Motors"},
+     * summary="Mendapatkan daftar motor secara acak",
+     * @OA\Parameter(name="limit", in="query", required=false, @OA\Schema(type="integer")),
+     * @OA\Response(response=200, ref="#/components/responses/200_Success"),
+     * @OA\Response(response=401, ref="#/components/responses/401_Unauthorized")
+     * )
+     */
+    public function random($limit = 20)
+    {
+        // $motors = Motor::inRandomOrder()->take($limit)->get();
+        $motors = Motor::inRandomOrder()->with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup'])->take($limit)->get();
+        return response()->json($motors);
+    }
+
+    // komparasi 
+    /**
+     * @OA\Get(
+     * path="/api/motorinci/komparasi/{idsatu}/{iddua}",
+     * operationId="compareTwoMotorinciMotors",
+     * tags={"Motorinci Motors"},
+     * summary="Membandingkan dua motor berdasarkan ID",
+     * @OA\Parameter(name="idsatu", description="ID Motor Pertama", required=true, in="path", @OA\Schema(type="integer")),
+     * @OA\Parameter(name="iddua", description="ID Motor Kedua", required=true, in="path", @OA\Schema(type="integer")),
+     * @OA\Response(response=200, ref="#/components/responses/200_Success"),
+     * @OA\Response(response=404, ref="#/components/responses/404_NotFound")
+     * )
+     */
+    public function komparasi($idsatu, $iddua)
+    {
+        $motor1 = Motor::with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup'])->find($idsatu);
+        $motor2 = Motor::with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup'])->find($iddua);
+        if (!$motor1 || !$motor2) {
+            return response()->json(['message' => 'One or both Motorinci motors not found'], 404);
+        }
+
+        return response()->json([
+            'message' => 'Motorinci motors retrieved successfully',
+            'data' => [
+                'motor1' => $motor1,
+                'motor2' => $motor2
+            ]
+        ], 200);
+    }
 }

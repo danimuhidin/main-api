@@ -18,4 +18,9 @@ class Brand extends Model
     protected $guarded = [
         'id',
     ];
+
+    public function motors()
+    {
+        return $this->hasMany(Motor::class, 'brand_id');
+    }
 }

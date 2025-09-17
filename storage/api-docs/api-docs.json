@@ -1853,6 +1853,97 @@
                 }
             }
         },
+        "/api/motorinci/search-motors": {
+            "get": {
+                "tags": [
+                    "Motorinci Motors"
+                ],
+                "summary": "Mencari motor berdasarkan nama",
+                "operationId": "searchMotorinciMotors",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/motors/random": {
+            "get": {
+                "tags": [
+                    "Motorinci Motors"
+                ],
+                "summary": "Mendapatkan daftar motor secara acak",
+                "operationId": "getRandomMotorinciMotors",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/401_Unauthorized"
+                    }
+                }
+            }
+        },
+        "/api/motorinci/komparasi/{idsatu}/{iddua}": {
+            "get": {
+                "tags": [
+                    "Motorinci Motors"
+                ],
+                "summary": "Membandingkan dua motor berdasarkan ID",
+                "operationId": "compareTwoMotorinciMotors",
+                "parameters": [
+                    {
+                        "name": "idsatu",
+                        "in": "path",
+                        "description": "ID Motor Pertama",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "iddua",
+                        "in": "path",
+                        "description": "ID Motor Kedua",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/404_NotFound"
+                    }
+                }
+            }
+        },
         "/api/motorinci/motor-features": {
             "get": {
                 "tags": [

@@ -8,6 +8,7 @@ use App\Http\Controllers\Motorinci\BrandController;
 use App\Http\Controllers\Motorinci\CategoryController;
 use App\Http\Controllers\Motorinci\ColorController;
 use App\Http\Controllers\Motorinci\FeatureItemController;
+use App\Http\Controllers\Motorinci\FrontController;
 use App\Http\Controllers\Motorinci\MotorController;
 use App\Http\Controllers\Motorinci\MotorFeatureController;
 use App\Http\Controllers\Motorinci\MotorImageController;
@@ -20,6 +21,11 @@ Route::get('/motorinci-generate', [App\Http\Controllers\Motorinci\AiController::
 Route::get('/motorinci-gen/{id}', [App\Http\Controllers\Motorinci\AiController::class, 'gen']);
 
 Route::middleware('auth:sanctum')->prefix('motorinci')->group(function () {
+    Route::get('search-motors', [MotorController::class, 'search']);
+    Route::get('motors/random', [MotorController::class, 'random']);
+    Route::get('komparasi/{idsatu}/{iddua}', [MotorController::class, 'komparasi']);
+    Route::get('front/home', [FrontController::class, 'home']);
+    
     Route::apiResource('generate', GenerateController::class);
 
     Route::apiResource('categories', CategoryController::class);

@@ -12,4 +12,9 @@ class Category extends Model
         'desc',
         'image',
     ];
+
+    public function motors()
+    {
+        return $this->hasMany(Motor::class, 'category_id');
+    }
 }
