@@ -240,7 +240,7 @@ class MotorController extends Controller
             return response()->json(['message' => 'Search query is required'], 400);
         }
 
-        $motors = Motor::where('name', 'like', "%{$search}%")->get();
+        $motors = Motor::where('name', 'like', "%{$search}%")->with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup'])->get();
 
         return response()->json($motors);
     }
