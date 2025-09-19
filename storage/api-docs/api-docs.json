@@ -653,6 +653,45 @@
                 ]
             }
         },
+        "/api/motorinci/ai": {
+            "post": {
+                "tags": [
+                    "Motorinci AI"
+                ],
+                "summary": "Generate AI response using OpenAI API",
+                "operationId": "aiMotorinci",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "prompt"
+                                ],
+                                "properties": {
+                                    "prompt": {
+                                        "type": "string",
+                                        "example": "Explain the theory of relativity."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/200_Success"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/422_UnprocessableContent"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/500_InternalServerError"
+                    }
+                }
+            }
+        },
         "/api/motorinci/available-colors": {
             "get": {
                 "tags": [
@@ -3241,6 +3280,10 @@
         {
             "name": "Motorinci Generate",
             "description": "Motorinci Generate"
+        },
+        {
+            "name": "Motorinci AI",
+            "description": "Motorinci AI"
         },
         {
             "name": "Motorinci Available Colors",

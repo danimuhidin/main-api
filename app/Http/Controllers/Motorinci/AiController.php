@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Exception;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Request;
 
 class AiController extends Controller
 {
@@ -435,6 +436,104 @@ class AiController extends Controller
                 'error' => 'Data yang dihasilkan oleh AI tidak valid.',
                 'details' => $e->errors()
             ], 422);
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+        }
+    }
+
+    // /**
+    //  * @OA\Post(
+    //  * path="/api/motorinci/available-colors",
+    //  * operationId="storeMotorinciAvailableColor",
+    //  * tags={"Motorinci Available Colors"},
+    //  * summary="Menambahkan warna baru untuk sebuah motor",
+    //  * @OA\RequestBody(
+    //  * required=true,
+    //  * @OA\MediaType(
+    //  * mediaType="multipart/form-data",
+    //  * @OA\Schema(
+    //  * required={"motor_id", "color_id"},
+    //  * @OA\Property(property="motor_id", type="integer", example=1),
+    //  * @OA\Property(property="color_id", type="integer", example=1),
+    //  * @OA\Property(
+    //  * property="image",
+    //  * type="string",
+    //  * format="binary",
+    //  * description="Gambar motor dengan warna terkait"
+    //  * )
+    //  * )
+    //  * )
+    //  * ),
+    //  * @OA\Response(response=201, ref="#/components/responses/201_Created"),
+    //  * @OA\Response(response=422, ref="#/components/responses/422_UnprocessableContent")
+    //  * )
+    //  */
+
+    /**
+     * @OA\Post(
+     * path="/api/motorinci/ai",
+     * operationId="aiMotorinci",
+     * tags={"Motorinci AI"},
+     * summary="Generate AI response using OpenAI API",
+     * @OA\RequestBody(
+     * required=true,
+     * @OA\MediaType(
+     * mediaType="application/json",
+     * @OA\Schema(
+     * required={"prompt"},
+     * @OA\Property(property="prompt", type="string", example="Explain the theory of relativity.")
+     * )
+     * )
+     * ),
+     * @OA\Response(response=200, ref="#/components/responses/200_Success"),
+     * @OA\Response(response=422, ref="#/components/responses/422_UnprocessableContent"),
+     * @OA\Response(response=500, ref="#/components/responses/500_InternalServerError")
+     * )
+     */
+
+    public function ai(Request $request)
+    {
+        $request->validate([
+            'prompt' => 'required|string|max:5000',
+        ]);
+
+        $prompt = $request->input('prompt');
+        $randomModels = [
+            'mistralai/mistral-small-3.2-24b-instruct:free',
+            'cognitivecomputations/dolphin-mistral-24b-venice-edition:free',
+            'nvidia/nemotron-nano-9b-v2:free',
+            'qwen/qwen3-4b:free',
+            'meta-llama/llama-3.3-70b-instruct'
+        ];
+
+        $model = $randomModels[array_rand($randomModels)];
+        try {
+            $response = Http::withHeaders([
+                'Authorization' => 'Bearer ' . env('OPENROUTER_API_AI'),
+            ])->post(env('OPENROUTER_API_URL') . '/chat/completions', [
+                'model' => $model,
+                'messages' => [
+                    [
+                        'role' => 'user',
+                        'content' => $prompt
+                    ]
+                ]
+            ]);
+
+            if ($response->successful()) {
+                $generatedData = $response->json();
+                $content = $generatedData['choices'][0]['message']['content'] ?? '';
+                return response()->json([
+                    'code' => 200,
+                    'message' => 'AI response generated successfully',
+                    'data' => $content
+                ]);
+            } else {
+                return response()->json([
+                    'error' => 'Failed to generate AI response',
+                    'details' => $response->json()
+                ], 422);
+            }
         } catch (Exception $e) {
             return response()->json(['error' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
         }

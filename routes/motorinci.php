@@ -25,6 +25,8 @@ Route::middleware('auth:sanctum')->prefix('motorinci')->group(function () {
     Route::get('motors/random', [MotorController::class, 'random']);
     Route::get('komparasi/{idsatu}/{iddua}', [MotorController::class, 'komparasi']);
     Route::get('front/home', [FrontController::class, 'home']);
+    // post /ai 
+    Route::post('ai', [App\Http\Controllers\Motorinci\AiController::class, 'ai']);
     
     Route::apiResource('generate', GenerateController::class);
 
