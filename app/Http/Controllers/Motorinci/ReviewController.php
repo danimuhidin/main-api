@@ -104,7 +104,7 @@ class ReviewController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'motor_id' => 'required|integer|exists:motors,id',
+            'motor_id' => 'required|integer|exists:motorinci_motors,id',
             'reviewer_name' => 'required|string|max:255',
             'reviewer_email' => 'required|email|max:255',
             'rating' => 'required|integer|min:1|max:5',

@@ -86,8 +86,8 @@ class MotorController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:motorinci_motors,name',
-            'brand_id' => 'required|integer|exists:brands,id',
-            'category_id' => 'required|integer|exists:categories,id',
+            'brand_id' => 'required|integer|exists:motorinci_brands,id',
+            'category_id' => 'required|integer|exists:motorinci_categories,id',
             'year_model' => 'required|integer|digits:4',
             'engine_cc' => 'required|integer',
             'low_price' => 'nullable|integer',
@@ -170,9 +170,9 @@ class MotorController extends Controller
         }
 
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255', Rule::unique('motorinci_motors')->ignore($motor->id)],
-            'brand_id' => 'required|integer|exists:brands,id',
-            'category_id' => 'required|integer|exists:categories,id',
+            'name' => ['required', 'string', 'max:255'],
+            'brand_id' => 'required|integer|exists:motorinci_brands,id',
+            'category_id' => 'required|integer|exists:motorinci_categories,id',
             'year_model' => 'required|integer|digits:4',
             'engine_cc' => 'required|integer',
             'low_price' => 'nullable|integer',
