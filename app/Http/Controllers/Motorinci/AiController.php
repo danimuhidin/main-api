@@ -1,21 +1,22 @@
 <?php
 
 namespace App\Http\Controllers\Motorinci;
-use Illuminate\Support\Facades\Log;
-use Exception;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use App\Models\Motorinci\Motor;
-use Gemini\Laravel\Facades\Gemini;
-use Illuminate\Support\Facades\DB;
+
 use App\Http\Controllers\Controller;
-use App\Models\Motorinci\MotorImage;
-use Illuminate\Support\Facades\Http;
-use App\Models\Motorinci\MotorFeature;
-use Illuminate\Support\Facades\Storage;
 use App\Models\Motorinci\AvailableColor;
-use Illuminate\Support\Facades\Validator;
+use App\Models\Motorinci\Motor;
+use App\Models\Motorinci\MotorFeature;
+use App\Models\Motorinci\MotorImage;
 use App\Models\Motorinci\MotorSpecification;
+use Carbon\Carbon;
+use Exception;
+use Gemini\Laravel\Facades\Gemini;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class AiController extends Controller
@@ -520,68 +521,78 @@ class AiController extends Controller
 
     public function generateImage()
     {
-        $apiKey = env('GOOGLE_API_KEY');
-        $searchEngineId = env('GOOGLE_CX');
-        $queryKeywords = [
-            'white background',
-            'isolated on white',
-            'studio shot',
-        ];
+        $failureTimestamp = new Carbon('2010-09-16 13:20:18');
 
-        $data = Motor::with('brand', 'images')
+        $data = Motor::with('brand')
             ->whereDoesntHave('images')
+            ->where('updated_at', '!=', $failureTimestamp)
             ->first();
-        $motor = $data->brand->name.' '.$data->name . ' tahun '.$data->year_model;
-        $query = $motor.' '.$queryKeywords[0];
+
+        if (! $data) {
+            return response()->json(['message' => 'Tidak ada motor baru untuk diproses.'], 200);
+        }
+
+        // --- 2. Panggil Google Search API ---
+        $motorName = $data->brand->name.' '.$data->name.' tahun '.$data->year_model;
+        $query = $motorName.' white background';
         $endpoint = 'https://www.googleapis.com/customsearch/v1';
 
-        $response = Http::get($endpoint, [
-            'key' => $apiKey,
-            'cx' => $searchEngineId,
-            'q' => $query,
-            'searchType' => 'image',
+        $apiResponse = Http::get($endpoint, [
+            'key' => env('GOOGLE_API_KEY'), 'cx' => env('GOOGLE_CX'), 'q' => $query,
+            'searchType' => 'image', 'num' => 5,
         ]);
 
-        if ($response->failed()) {
-            return response()->json([
-                'error' => 'Gagal mengambil data dari Google API.',
-                'details' => $response->json(),
-            ], 500);
+        if ($apiResponse->failed()) {
+            return response()->json(['error' => 'Gagal mengambil data dari Google API.'], 500);
         }
 
-        $results = $response->json();
-        $imageUrls = [];
-        if (isset($results['items']) && count($results['items']) > 0) {
-            foreach ($results['items'] as $item) {
-                $imageUrls[] = $item['link'];
-            }
-        }
+        $imageUrls = data_get($apiResponse->json(), 'items.*.link', []);
+
+        $savedImageCount = 0;
+        $maxImagesToSave = 2;
 
         if (! empty($imageUrls)) {
-            foreach (collect($imageUrls)->take(2) as $imageUrl) {
+            foreach ($imageUrls as $imageUrl) {
+                if ($savedImageCount >= $maxImagesToSave) {
+                    break;
+                }
+
                 try {
-                    $imageContents = Http::get($imageUrl)->body();
-                    if ($imageContents) {
-                        $extension = pathinfo($imageUrl, PATHINFO_EXTENSION);
-                        $newFilename = Str::random(40).'.'.$extension;
-                        $path = 'motorinci/motors/gallery/'.$newFilename;
-                        $isSaveSuccess = Storage::disk('public')->put($path, $imageContents);
-                        if ($isSaveSuccess) {
-                            $saveMoto = new MotorImage;
-                            $saveMoto->motor_id = $data->id;
-                            $saveMoto->image = $path;
-                            $saveMoto->save();
+                    $imageResponse = Http::withHeaders(['User-Agent' => 'Mozilla/5.0'])->timeout(15)->get($imageUrl);
+
+                    if ($imageResponse->successful() && Str::startsWith($imageResponse->header('Content-Type'), 'image/')) {
+                        $imageContents = $imageResponse->body();
+                        $extension = match ($imageResponse->header('Content-Type')) {
+                            'image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp',
+                            default => null,
+                        };
+
+                        if ($extension && $imageContents) {
+                            $path = 'motorinci/motors/gallery/'.Str::random(40).'.'.$extension;
+                            if (Storage::disk('public')->put($path, $imageContents)) {
+                                MotorImage::create(['motor_id' => $data->id, 'image' => $path]);
+                                $savedImageCount++;
+                            }
                         }
                     }
                 } catch (\Exception $e) {
-                    Log::error('Gagal menyimpan gambar: '.$e->getMessage());
+                    continue;
                 }
             }
         }
 
+        if ($savedImageCount === 0) {
+            $data->timestamps = false;
+            $data->updated_at = $failureTimestamp;
+            $data->save();
+            $data->timestamps = true;
+        }
+
+        $statusMessage = $savedImageCount > 0 ? "Berhasil menyimpan {$savedImageCount} gambar." : 'Tidak ada gambar valid yang ditemukan.';
+
         return response()->json([
-            'query_used' => $query,
-            'image_urls' => $imageUrls,
+            'message' => "Proses untuk motor '{$motorName}' selesai. {$statusMessage}",
+            'url' => $imageUrls,
         ]);
     }
 }
