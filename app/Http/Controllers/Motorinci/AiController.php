@@ -558,7 +558,7 @@ class AiController extends Controller
         }
 
         if (! empty($imageUrls)) {
-            foreach (collect($imageUrls)->take(5) as $imageUrl) {
+            foreach (collect($imageUrls)->take(2) as $imageUrl) {
                 try {
                     $imageContents = Http::get($imageUrl)->body();
                     if ($imageContents) {
