@@ -27,7 +27,7 @@ class MotorController extends Controller
         $limit = $request->input('limit');
 
         // Menggunakan eager loading untuk mengambil relasi brand dan category
-        $query = Motor::with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup']);
+        $query = Motor::with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup', 'reviews', 'availableColors.color']);
 
         if ($offset) {
             $query->skip($offset);
@@ -123,7 +123,7 @@ class MotorController extends Controller
      */
     public function show($id)
     {
-        $motor = Motor::with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup'])->find($id);
+        $motor = Motor::with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup', 'reviews', 'availableColors.color'])->find($id);
 
         if (!$motor) {
             return response()->json(['message' => 'Motorinci motor not found'], 404);
@@ -279,8 +279,8 @@ class MotorController extends Controller
      */
     public function komparasi($idsatu, $iddua)
     {
-        $motor1 = Motor::with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup'])->find($idsatu);
-        $motor2 = Motor::with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup'])->find($iddua);
+        $motor1 = Motor::with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup', 'reviews', 'availableColors.color'])->find($idsatu);
+        $motor2 = Motor::with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup', 'reviews', 'availableColors.color'])->find($iddua);
         if (!$motor1 || !$motor2) {
             return response()->json(['message' => 'One or both Motorinci motors not found'], 404);
         }

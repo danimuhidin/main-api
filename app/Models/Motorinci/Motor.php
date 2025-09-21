@@ -52,4 +52,14 @@ class Motor extends Model
     {
         return $this->hasMany(MotorSpecification::class, 'motor_id');
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'motor_id');
+    }
+
+    public function availableColors()
+    {
+        return $this->hasMany(AvailableColor::class, 'motor_id');
+    }
 }
