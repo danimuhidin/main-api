@@ -1,19 +1,22 @@
 <?php
 
 namespace App\Http\Controllers\Motorinci;
-
-use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
+use Exception;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Models\Motorinci\Motor;
 use Gemini\Laravel\Facades\Gemini;
 use Illuminate\Support\Facades\DB;
-use App\Models\Motorinci\AvailableColor;
-use App\Models\Motorinci\Motor;
-use App\Models\Motorinci\MotorFeature;
-use App\Models\Motorinci\MotorSpecification;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
-use Exception;
+use App\Http\Controllers\Controller;
+use App\Models\Motorinci\MotorImage;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Request;
+use App\Models\Motorinci\MotorFeature;
+use Illuminate\Support\Facades\Storage;
+use App\Models\Motorinci\AvailableColor;
+use Illuminate\Support\Facades\Validator;
+use App\Models\Motorinci\MotorSpecification;
+use Illuminate\Validation\ValidationException;
 
 class AiController extends Controller
 {
@@ -22,7 +25,7 @@ class AiController extends Controller
         // 1. Menggunakan Query Builder sesuai permintaan
         $type = DB::table('type')->where('status', 1)->first();
 
-        if (!$type) {
+        if (! $type) {
             return response()->json(['error' => 'Tidak ada data motor baru untuk diproses.'], 404);
         }
 
@@ -123,15 +126,15 @@ class AiController extends Controller
                 $responseText = $result->text();
 
                 preg_match('/\{[\s\S]*\}/', $responseText, $matches);
-                if (!isset($matches[0])) {
-                    throw new Exception("Tidak dapat menemukan format JSON yang valid. Respons mentah: " . $responseText);
+                if (! isset($matches[0])) {
+                    throw new Exception('Tidak dapat menemukan format JSON yang valid. Respons mentah: '.$responseText);
                 }
 
                 $jsonString = $matches[0];
                 $data = json_decode($jsonString, true);
 
                 if (json_last_error() !== JSON_ERROR_NONE) {
-                    throw new Exception("Gagal mem-parsing JSON. Error: " . json_last_error_msg());
+                    throw new Exception('Gagal mem-parsing JSON. Error: '.json_last_error_msg());
                 }
 
                 // Validasi data dari AI tetap sangat penting
@@ -160,7 +163,7 @@ class AiController extends Controller
                 $validatedData = $validator->validated();
 
                 // 2. Proses penyimpanan menggunakan new Model() dan save()
-                $motor = new Motor();
+                $motor = new Motor;
                 $motor->name = $validatedData['name'];
                 $motor->year_model = $validatedData['year_model'];
                 $motor->brand_id = $validatedData['brand_id'];
@@ -171,27 +174,27 @@ class AiController extends Controller
                 $motor->desc = $validatedData['desc'];
                 $motor->save();
 
-                if (!empty($validatedData['colors'])) {
+                if (! empty($validatedData['colors'])) {
                     foreach ($validatedData['colors'] as $colorId) {
-                        $motorColors = new AvailableColor();
+                        $motorColors = new AvailableColor;
                         $motorColors->motor_id = $motor->id;
                         $motorColors->color_id = $colorId;
                         $motorColors->save();
                     }
                 }
 
-                if (!empty($validatedData['features'])) {
+                if (! empty($validatedData['features'])) {
                     foreach ($validatedData['features'] as $featureId) {
-                        $motorFeatures = new MotorFeature();
+                        $motorFeatures = new MotorFeature;
                         $motorFeatures->motor_id = $motor->id;
                         $motorFeatures->feature_item_id = $featureId;
                         $motorFeatures->save();
                     }
                 }
 
-                if (!empty($validatedData['specifications'])) {
+                if (! empty($validatedData['specifications'])) {
                     foreach ($validatedData['specifications'] as $spec) {
-                        $motorSpec = new MotorSpecification();
+                        $motorSpec = new MotorSpecification;
                         $motorSpec->motor_id = $motor->id;
                         $motorSpec->specification_item_id = $spec['spec_item_id'];
                         $motorSpec->value = $spec['value'];
@@ -207,36 +210,36 @@ class AiController extends Controller
 
             return response()->json([
                 'message' => 'Data motor berhasil digenerate dan disimpan!',
-                'data' => $generatedData
+                'data' => $generatedData,
             ], 201);
         } catch (ValidationException $e) {
             return response()->json([
                 'error' => 'Data yang dihasilkan oleh AI tidak valid.',
-                'details' => $e->errors()
+                'details' => $e->errors(),
             ], 422);
         } catch (Exception $e) {
-            return response()->json(['error' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Terjadi kesalahan: '.$e->getMessage()], 500);
         }
     }
 
     public function gen($id)
-    {   
+    {
         $type = DB::table('type')->where('status', 1)->first();
 
-        if (!$type) {
+        if (! $type) {
             return response()->json(['error' => 'Tidak ada data motor baru untuk diproses.'], 404);
         }
 
         if ($id == 1) {
-            $model = "mistralai/mistral-small-3.2-24b-instruct:free";
+            $model = 'mistralai/mistral-small-3.2-24b-instruct:free';
         } elseif ($id == 2) {
-            $model = "cognitivecomputations/dolphin-mistral-24b-venice-edition:free";
+            $model = 'cognitivecomputations/dolphin-mistral-24b-venice-edition:free';
         } elseif ($id == 3) {
-            $model = "nvidia/nemotron-nano-9b-v2:free";
+            $model = 'nvidia/nemotron-nano-9b-v2:free';
         } elseif ($id == 4) {
-            $model = "qwen/qwen3-4b:free";
+            $model = 'qwen/qwen3-4b:free';
         } else {
-            $model = "meta-llama/llama-3.3-70b-instruct";
+            $model = 'meta-llama/llama-3.3-70b-instruct';
         }
 
         try {
@@ -332,28 +335,27 @@ class AiController extends Controller
                 ";
 
                 $response = Http::withHeaders([
-                    'Authorization' => 'Bearer ' . env('OPENROUTER_API_KEY'),
+                    'Authorization' => 'Bearer '.env('OPENROUTER_API_KEY'),
                     'Content-Type' => 'application/json',
-                ])->post(env('OPENROUTER_API_URL') . '/chat/completions', [
+                ])->post(env('OPENROUTER_API_URL').'/chat/completions', [
                     'model' => $model,
                     'messages' => [
-                        ['role' => 'user', 'content' => $prompt]
+                        ['role' => 'user', 'content' => $prompt],
                     ],
                 ]);
                 $result = $response->json();
                 $responseText = $result['choices'][0]['message']['content'] ?? '';
-                
 
                 preg_match('/\{[\s\S]*\}/', $responseText, $matches);
-                if (!isset($matches[0])) {
-                    throw new Exception("Tidak dapat menemukan format JSON yang valid. Respons mentah: " . $responseText);
+                if (! isset($matches[0])) {
+                    throw new Exception('Tidak dapat menemukan format JSON yang valid. Respons mentah: '.$responseText);
                 }
 
                 $jsonString = $matches[0];
                 $data = json_decode($jsonString, true);
 
                 if (json_last_error() !== JSON_ERROR_NONE) {
-                    throw new Exception("Gagal mem-parsing JSON. Error: " . json_last_error_msg());
+                    throw new Exception('Gagal mem-parsing JSON. Error: '.json_last_error_msg());
                 }
 
                 // Validasi data dari AI tetap sangat penting
@@ -382,7 +384,7 @@ class AiController extends Controller
                 $validatedData = $validator->validated();
 
                 // 2. Proses penyimpanan menggunakan new Model() dan save()
-                $motor = new Motor();
+                $motor = new Motor;
                 $motor->name = $validatedData['name'];
                 $motor->year_model = $validatedData['year_model'];
                 $motor->brand_id = $validatedData['brand_id'];
@@ -393,27 +395,27 @@ class AiController extends Controller
                 $motor->desc = $validatedData['desc'];
                 $motor->save();
 
-                if (!empty($validatedData['colors'])) {
+                if (! empty($validatedData['colors'])) {
                     foreach ($validatedData['colors'] as $colorId) {
-                        $motorColors = new AvailableColor();
+                        $motorColors = new AvailableColor;
                         $motorColors->motor_id = $motor->id;
                         $motorColors->color_id = $colorId;
                         $motorColors->save();
                     }
                 }
 
-                if (!empty($validatedData['features'])) {
+                if (! empty($validatedData['features'])) {
                     foreach ($validatedData['features'] as $featureId) {
-                        $motorFeatures = new MotorFeature();
+                        $motorFeatures = new MotorFeature;
                         $motorFeatures->motor_id = $motor->id;
                         $motorFeatures->feature_item_id = $featureId;
                         $motorFeatures->save();
                     }
                 }
 
-                if (!empty($validatedData['specifications'])) {
+                if (! empty($validatedData['specifications'])) {
                     foreach ($validatedData['specifications'] as $spec) {
-                        $motorSpec = new MotorSpecification();
+                        $motorSpec = new MotorSpecification;
                         $motorSpec->motor_id = $motor->id;
                         $motorSpec->specification_item_id = $spec['spec_item_id'];
                         $motorSpec->value = $spec['value'];
@@ -429,45 +431,17 @@ class AiController extends Controller
 
             return response()->json([
                 'message' => 'Data motor berhasil digenerate dan disimpan!',
-                'data' => $generatedData
+                'data' => $generatedData,
             ], 201);
         } catch (ValidationException $e) {
             return response()->json([
                 'error' => 'Data yang dihasilkan oleh AI tidak valid.',
-                'details' => $e->errors()
+                'details' => $e->errors(),
             ], 422);
         } catch (Exception $e) {
-            return response()->json(['error' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Terjadi kesalahan: '.$e->getMessage()], 500);
         }
     }
-
-    // /**
-    //  * @OA\Post(
-    //  * path="/api/motorinci/available-colors",
-    //  * operationId="storeMotorinciAvailableColor",
-    //  * tags={"Motorinci Available Colors"},
-    //  * summary="Menambahkan warna baru untuk sebuah motor",
-    //  * @OA\RequestBody(
-    //  * required=true,
-    //  * @OA\MediaType(
-    //  * mediaType="multipart/form-data",
-    //  * @OA\Schema(
-    //  * required={"motor_id", "color_id"},
-    //  * @OA\Property(property="motor_id", type="integer", example=1),
-    //  * @OA\Property(property="color_id", type="integer", example=1),
-    //  * @OA\Property(
-    //  * property="image",
-    //  * type="string",
-    //  * format="binary",
-    //  * description="Gambar motor dengan warna terkait"
-    //  * )
-    //  * )
-    //  * )
-    //  * ),
-    //  * @OA\Response(response=201, ref="#/components/responses/201_Created"),
-    //  * @OA\Response(response=422, ref="#/components/responses/422_UnprocessableContent")
-    //  * )
-    //  */
 
     /**
      * @OA\Post(
@@ -475,22 +449,26 @@ class AiController extends Controller
      * operationId="aiMotorinci",
      * tags={"Motorinci AI"},
      * summary="Generate AI response using OpenAI API",
+     *
      * @OA\RequestBody(
      * required=true,
+     *
      * @OA\MediaType(
      * mediaType="application/json",
+     *
      * @OA\Schema(
      * required={"prompt"},
+     *
      * @OA\Property(property="prompt", type="string", example="Explain the theory of relativity.")
      * )
      * )
      * ),
+     *
      * @OA\Response(response=200, ref="#/components/responses/200_Success"),
      * @OA\Response(response=422, ref="#/components/responses/422_UnprocessableContent"),
      * @OA\Response(response=500, ref="#/components/responses/500_InternalServerError")
      * )
      */
-
     public function ai(Request $request)
     {
         $request->validate([
@@ -503,39 +481,107 @@ class AiController extends Controller
             'cognitivecomputations/dolphin-mistral-24b-venice-edition:free',
             'nvidia/nemotron-nano-9b-v2:free',
             'qwen/qwen3-4b:free',
-            'meta-llama/llama-3.3-70b-instruct'
+            'meta-llama/llama-3.3-70b-instruct',
         ];
 
         $model = $randomModels[array_rand($randomModels)];
         try {
             $response = Http::withHeaders([
-                'Authorization' => 'Bearer ' . env('OPENROUTER_API_AI'),
-            ])->post(env('OPENROUTER_API_URL') . '/chat/completions', [
+                'Authorization' => 'Bearer '.env('OPENROUTER_API_AI'),
+            ])->post(env('OPENROUTER_API_URL').'/chat/completions', [
                 'model' => $model,
                 'messages' => [
                     [
                         'role' => 'user',
-                        'content' => $prompt
-                    ]
-                ]
+                        'content' => $prompt,
+                    ],
+                ],
             ]);
 
             if ($response->successful()) {
                 $generatedData = $response->json();
                 $content = $generatedData['choices'][0]['message']['content'] ?? '';
+
                 return response()->json([
                     'code' => 200,
                     'message' => 'AI response generated successfully',
-                    'data' => $content
+                    'data' => $content,
                 ]);
             } else {
                 return response()->json([
                     'error' => 'Failed to generate AI response',
-                    'details' => $response->json()
+                    'details' => $response->json(),
                 ], 422);
             }
         } catch (Exception $e) {
-            return response()->json(['error' => 'Terjadi kesalahan: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Terjadi kesalahan: '.$e->getMessage()], 500);
         }
+    }
+
+    public function generateImage()
+    {
+        $apiKey = env('GOOGLE_API_KEY');
+        $searchEngineId = env('GOOGLE_CX');
+        $queryKeywords = [
+            'white background',
+            'isolated on white',
+            'studio shot',
+        ];
+
+        $data = Motor::with('brand', 'images')
+            ->whereDoesntHave('images')
+            ->first();
+        $motor = $data->brand->name.' '.$data->name . ' tahun '.$data->year_model;
+        $query = $motor.' '.$queryKeywords[0];
+        $endpoint = 'https://www.googleapis.com/customsearch/v1';
+
+        $response = Http::get($endpoint, [
+            'key' => $apiKey,
+            'cx' => $searchEngineId,
+            'q' => $query,
+            'searchType' => 'image',
+        ]);
+
+        if ($response->failed()) {
+            return response()->json([
+                'error' => 'Gagal mengambil data dari Google API.',
+                'details' => $response->json(),
+            ], 500);
+        }
+
+        $results = $response->json();
+        $imageUrls = [];
+        if (isset($results['items']) && count($results['items']) > 0) {
+            foreach ($results['items'] as $item) {
+                $imageUrls[] = $item['link'];
+            }
+        }
+
+        if (! empty($imageUrls)) {
+            foreach (collect($imageUrls)->take(5) as $imageUrl) {
+                try {
+                    $imageContents = Http::get($imageUrl)->body();
+                    if ($imageContents) {
+                        $extension = pathinfo($imageUrl, PATHINFO_EXTENSION);
+                        $newFilename = Str::random(40).'.'.$extension;
+                        $path = 'motorinci/motors/gallery/'.$newFilename;
+                        $isSaveSuccess = Storage::disk('public')->put($path, $imageContents);
+                        if ($isSaveSuccess) {
+                            $saveMoto = new MotorImage;
+                            $saveMoto->motor_id = $data->id;
+                            $saveMoto->image = $path;
+                            $saveMoto->save();
+                        }
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Gagal menyimpan gambar: '.$e->getMessage());
+                }
+            }
+        }
+
+        return response()->json([
+            'query_used' => $query,
+            'image_urls' => $imageUrls,
+        ]);
     }
 }

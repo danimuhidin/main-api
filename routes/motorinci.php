@@ -17,6 +17,7 @@ use App\Http\Controllers\Motorinci\ReviewController;
 use App\Http\Controllers\Motorinci\SpecificationGroupController;
 use App\Http\Controllers\Motorinci\SpecificationItemController;
 
+Route::get('/motorinci-generate-image', [App\Http\Controllers\Motorinci\AiController::class, 'generateImage']);
 Route::get('/motorinci-generate', [App\Http\Controllers\Motorinci\AiController::class, 'generate']);
 Route::get('/motorinci-gen/{id}', [App\Http\Controllers\Motorinci\AiController::class, 'gen']);
 
