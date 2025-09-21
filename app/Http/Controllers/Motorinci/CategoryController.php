@@ -134,7 +134,7 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        $category = Category::with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup', 'reviews', 'availableColors.color'])->find($id);
+        $category = Category::with('motors')->find($id);
         if (!$category) {
             return response()->json([
                 'message' => 'Motorinci category not found'

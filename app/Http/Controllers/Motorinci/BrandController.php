@@ -149,7 +149,7 @@ class BrandController extends Controller
      */
     public function show($id)
     {
-        $brand = Brand::with('motors.brand')->find($id);
+        $brand = Brand::with('motors')->find($id);
         if (!$brand) {
             return response()->json([
                 'message' => 'Motorinci brand not found'
