@@ -595,4 +595,81 @@ class AiController extends Controller
             'url' => $imageUrls,
         ]);
     }
+
+    public function generateImagw()
+    {
+        $failureTimestamp = new Carbon('2010-09-16 13:20:18');
+
+        $data = Motor::with('brand')
+            ->whereDoesntHave('images')
+            ->where('updated_at', '!=', $failureTimestamp)
+            ->first();
+
+        if (! $data) {
+            return response()->json(['message' => 'Tidak ada motor baru untuk diproses.'], 200);
+        }
+
+        // --- 2. Panggil Google Search API ---
+        $motorName = $data->brand->name.' '.$data->name.' tahun '.$data->year_model;
+        $query = $motorName.' white background';
+        $endpoint = 'https://www.googleapis.com/customsearch/v1';
+
+        $apiResponse = Http::get($endpoint, [
+            'key' => env('GOOGLE_API_KEY_GW'), 'cx' => env('GOOGLE_CX_GW'), 'q' => $query,
+            'searchType' => 'image', 'num' => 5,
+        ]);
+
+        if ($apiResponse->failed()) {
+            return response()->json(['error' => 'Gagal mengambil data dari Google API.'], 500);
+        }
+
+        $imageUrls = data_get($apiResponse->json(), 'items.*.link', []);
+
+        $savedImageCount = 0;
+        $maxImagesToSave = 2;
+
+        if (! empty($imageUrls)) {
+            foreach ($imageUrls as $imageUrl) {
+                if ($savedImageCount >= $maxImagesToSave) {
+                    break;
+                }
+
+                try {
+                    $imageResponse = Http::withHeaders(['User-Agent' => 'Mozilla/5.0'])->timeout(15)->get($imageUrl);
+
+                    if ($imageResponse->successful() && Str::startsWith($imageResponse->header('Content-Type'), 'image/')) {
+                        $imageContents = $imageResponse->body();
+                        $extension = match ($imageResponse->header('Content-Type')) {
+                            'image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp',
+                            default => null,
+                        };
+
+                        if ($extension && $imageContents) {
+                            $path = 'motorinci/motors/gallery/'.Str::random(40).'.'.$extension;
+                            if (Storage::disk('public')->put($path, $imageContents)) {
+                                MotorImage::create(['motor_id' => $data->id, 'image' => $path]);
+                                $savedImageCount++;
+                            }
+                        }
+                    }
+                } catch (\Exception $e) {
+                    continue;
+                }
+            }
+        }
+
+        if ($savedImageCount === 0) {
+            $data->timestamps = false;
+            $data->updated_at = $failureTimestamp;
+            $data->save();
+            $data->timestamps = true;
+        }
+
+        $statusMessage = $savedImageCount > 0 ? "Berhasil menyimpan {$savedImageCount} gambar." : 'Tidak ada gambar valid yang ditemukan.';
+
+        return response()->json([
+            'message' => "Proses untuk motor '{$motorName}' selesai. {$statusMessage}",
+            'url' => $imageUrls,
+        ]);
+    }
 }

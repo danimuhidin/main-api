@@ -2,8 +2,6 @@
 
 use App\Http\Controllers\Api\GenerateController;
 use App\Http\Controllers\Motorinci\AvailableColorController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Motorinci\BrandController;
 use App\Http\Controllers\Motorinci\CategoryController;
 use App\Http\Controllers\Motorinci\ColorController;
@@ -16,8 +14,10 @@ use App\Http\Controllers\Motorinci\MotorSpecificationController;
 use App\Http\Controllers\Motorinci\ReviewController;
 use App\Http\Controllers\Motorinci\SpecificationGroupController;
 use App\Http\Controllers\Motorinci\SpecificationItemController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/motorinci-generate-image', [App\Http\Controllers\Motorinci\AiController::class, 'generateImage']);
+Route::get('/motorinci-generate-imagw', [App\Http\Controllers\Motorinci\AiController::class, 'generateImagw']);
 Route::get('/motorinci-generate', [App\Http\Controllers\Motorinci\AiController::class, 'generate']);
 Route::get('/motorinci-gen/{id}', [App\Http\Controllers\Motorinci\AiController::class, 'gen']);
 
@@ -26,9 +26,10 @@ Route::middleware('auth:sanctum')->prefix('motorinci')->group(function () {
     Route::get('motors/random', [MotorController::class, 'random']);
     Route::get('komparasi/{idsatu}/{iddua}', [MotorController::class, 'komparasi']);
     Route::get('front/home', [FrontController::class, 'home']);
-    // post /ai 
+    Route::get('brands/{id}/motors', [MotorController::class, 'getMotorsByBrand']);
+    Route::get('categories/{id}/motors', [MotorController::class, 'getMotorsByCategory']);
     Route::post('ai', [App\Http\Controllers\Motorinci\AiController::class, 'ai']);
-    
+
     Route::apiResource('generate', GenerateController::class);
 
     Route::apiResource('categories', CategoryController::class);

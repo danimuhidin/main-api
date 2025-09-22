@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Motorinci;
 
 use App\Http\Controllers\Controller;
+use App\Models\Motorinci\Brand;
+use App\Models\Motorinci\Category;
 use App\Models\Motorinci\Motor;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class MotorController extends Controller
 {
@@ -15,8 +16,10 @@ class MotorController extends Controller
      * operationId="getMotorinciMotorsList",
      * tags={"Motorinci Motors"},
      * summary="Mendapatkan daftar motor",
+     *
      * @OA\Parameter(name="offset", in="query", required=false, @OA\Schema(type="integer")),
      * @OA\Parameter(name="limit", in="query", required=false, @OA\Schema(type="integer")),
+     *
      * @OA\Response(response=200, ref="#/components/responses/200_Success"),
      * @OA\Response(response=401, ref="#/components/responses/401_Unauthorized")
      * )
@@ -47,7 +50,7 @@ class MotorController extends Controller
                 'total' => $total,
                 'limit' => $limit ? (int) $limit : $total,
                 'offset' => (int) $offset,
-            ]
+            ],
         ], 200);
     }
 
@@ -57,12 +60,16 @@ class MotorController extends Controller
      * operationId="storeMotorinciMotor",
      * tags={"Motorinci Motors"},
      * summary="Membuat data motor baru",
+     *
      * @OA\RequestBody(
      * required=true,
+     *
      * @OA\MediaType(
      * mediaType="application/json",
+     *
      * @OA\Schema(
      * required={"name", "brand_id", "category_id", "year_model", "engine_cc"},
+     *
      * @OA\Property(property="name", type="string", example="Vario 160"),
      * @OA\Property(property="brand_id", type="integer", example=1),
      * @OA\Property(property="category_id", type="integer", example=1),
@@ -78,6 +85,7 @@ class MotorController extends Controller
      * )
      * )
      * ),
+     *
      * @OA\Response(response=201, ref="#/components/responses/201_Created"),
      * @OA\Response(response=422, ref="#/components/responses/422_UnprocessableContent")
      * )
@@ -106,7 +114,7 @@ class MotorController extends Controller
 
         return response()->json([
             'message' => 'Motorinci motor created successfully',
-            'data' => $motor
+            'data' => $motor,
         ], 201);
     }
 
@@ -116,7 +124,9 @@ class MotorController extends Controller
      * operationId="getMotorinciMotorById",
      * tags={"Motorinci Motors"},
      * summary="Mendapatkan detail motor berdasarkan ID",
+     *
      * @OA\Parameter(name="id", description="Motor ID", required=true, in="path", @OA\Schema(type="integer")),
+     *
      * @OA\Response(response=200, ref="#/components/responses/200_Success"),
      * @OA\Response(response=404, ref="#/components/responses/404_NotFound")
      * )
@@ -125,13 +135,13 @@ class MotorController extends Controller
     {
         $motor = Motor::with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup', 'reviews', 'availableColors.color'])->find($id);
 
-        if (!$motor) {
+        if (! $motor) {
             return response()->json(['message' => 'Motorinci motor not found'], 404);
         }
 
         return response()->json([
             'message' => 'Motorinci motor retrieved successfully',
-            'data' => $motor
+            'data' => $motor,
         ], 200);
     }
 
@@ -141,12 +151,17 @@ class MotorController extends Controller
      * operationId="updateMotorinciMotor",
      * tags={"Motorinci Motors"},
      * summary="Update data motor yang sudah ada",
+     *
      * @OA\Parameter(name="id", description="Motor ID", required=true, in="path", @OA\Schema(type="integer")),
+     *
      * @OA\RequestBody(
      * required=true,
+     *
      * @OA\MediaType(
      * mediaType="application/json",
+     *
      * @OA\Schema(
+     *
      * @OA\Property(property="name", type="string", example="Vario 160 ABS"),
      * @OA\Property(property="brand_id", type="integer", example=1),
      * @OA\Property(property="category_id", type="integer", example=1),
@@ -157,6 +172,7 @@ class MotorController extends Controller
      * )
      * )
      * ),
+     *
      * @OA\Response(response=200, ref="#/components/responses/200_Success"),
      * @OA\Response(response=404, ref="#/components/responses/404_NotFound"),
      * @OA\Response(response=422, ref="#/components/responses/422_UnprocessableContent")
@@ -165,7 +181,7 @@ class MotorController extends Controller
     public function update(Request $request, $id)
     {
         $motor = Motor::find($id);
-        if (!$motor) {
+        if (! $motor) {
             return response()->json(['message' => 'Motorinci motor not found'], 404);
         }
 
@@ -183,7 +199,7 @@ class MotorController extends Controller
             'is_active' => 'sometimes|boolean',
             'is_featured' => 'sometimes|boolean',
         ]);
-        
+
         // Atur tanggal publikasi berdasarkan status is_active
         if ($request->has('is_active')) {
             $validated['published_at'] = $request->boolean('is_active') ? ($motor->published_at ?? now()) : null;
@@ -193,7 +209,7 @@ class MotorController extends Controller
 
         return response()->json([
             'message' => 'Motorinci motor updated successfully',
-            'data' => $motor->load(['brand', 'category']) // Muat ulang relasi
+            'data' => $motor->load(['brand', 'category']), // Muat ulang relasi
         ], 200);
     }
 
@@ -203,7 +219,9 @@ class MotorController extends Controller
      * operationId="deleteMotorinciMotor",
      * tags={"Motorinci Motors"},
      * summary="Menghapus data motor",
+     *
      * @OA\Parameter(name="id", description="Motor ID", required=true, in="path", @OA\Schema(type="integer")),
+     *
      * @OA\Response(response=200, description="Delete successful"),
      * @OA\Response(response=404, ref="#/components/responses/404_NotFound")
      * )
@@ -211,7 +229,7 @@ class MotorController extends Controller
     public function destroy($id)
     {
         $motor = Motor::find($id);
-        if (!$motor) {
+        if (! $motor) {
             return response()->json(['message' => 'Motorinci motor not found'], 404);
         }
 
@@ -220,23 +238,23 @@ class MotorController extends Controller
         return response()->json(['message' => 'Motorinci motor deleted successfully'], 200);
     }
 
-    
     /**
      * @OA\Get(
      * path="/api/motorinci/search-motors",
      * operationId="searchMotorinciMotors",
      * tags={"Motorinci Motors"},
      * summary="Mencari motor berdasarkan nama",
+     *
      * @OA\Parameter(name="search", in="query", required=true, @OA\Schema(type="string")),
+     *
      * @OA\Response(response=200, ref="#/components/responses/200_Success"),
      * @OA\Response(response=401, ref="#/components/responses/401_Unauthorized")
      * )
      */
-
     public function search(Request $request)
     {
         $search = $request->input('search');
-        if (!$search) {
+        if (! $search) {
             return response()->json(['message' => 'Search query is required'], 400);
         }
 
@@ -245,14 +263,16 @@ class MotorController extends Controller
         return response()->json($motors);
     }
 
-    // make random 
+    // make random
     /**
      * @OA\Get(
      * path="/api/motorinci/motors/random",
      * operationId="getRandomMotorinciMotors",
      * tags={"Motorinci Motors"},
      * summary="Mendapatkan daftar motor secara acak",
+     *
      * @OA\Parameter(name="limit", in="query", required=false, @OA\Schema(type="integer")),
+     *
      * @OA\Response(response=200, ref="#/components/responses/200_Success"),
      * @OA\Response(response=401, ref="#/components/responses/401_Unauthorized")
      * )
@@ -261,18 +281,21 @@ class MotorController extends Controller
     {
         // $motors = Motor::inRandomOrder()->take($limit)->get();
         $motors = Motor::inRandomOrder()->with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup'])->take($limit)->get();
+
         return response()->json($motors);
     }
 
-    // komparasi 
+    // komparasi
     /**
      * @OA\Get(
      * path="/api/motorinci/komparasi/{idsatu}/{iddua}",
      * operationId="compareTwoMotorinciMotors",
      * tags={"Motorinci Motors"},
      * summary="Membandingkan dua motor berdasarkan ID",
+     *
      * @OA\Parameter(name="idsatu", description="ID Motor Pertama", required=true, in="path", @OA\Schema(type="integer")),
      * @OA\Parameter(name="iddua", description="ID Motor Kedua", required=true, in="path", @OA\Schema(type="integer")),
+     *
      * @OA\Response(response=200, ref="#/components/responses/200_Success"),
      * @OA\Response(response=404, ref="#/components/responses/404_NotFound")
      * )
@@ -281,7 +304,7 @@ class MotorController extends Controller
     {
         $motor1 = Motor::with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup', 'reviews', 'availableColors.color'])->find($idsatu);
         $motor2 = Motor::with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup', 'reviews', 'availableColors.color'])->find($iddua);
-        if (!$motor1 || !$motor2) {
+        if (! $motor1 || ! $motor2) {
             return response()->json(['message' => 'One or both Motorinci motors not found'], 404);
         }
 
@@ -289,8 +312,29 @@ class MotorController extends Controller
             'message' => 'Motorinci motors retrieved successfully',
             'data' => [
                 'motor1' => $motor1,
-                'motor2' => $motor2
-            ]
+                'motor2' => $motor2,
+            ],
         ], 200);
+    }
+
+    public function getMotorsByBrand($id)
+    {
+        $brand = Brand::find($id);
+        if (! $brand) {
+            return response()->json(['message' => 'Brand not found'], 404);
+        }
+        $motors = $brand->motors()->with(['brand', 'images'])->paginate(20);
+
+        return response()->json($motors, 200);
+    }
+
+    public function getMotorsByCategory($id)
+    {
+        $category = Category::find($id);
+        if (! $category) {
+            return response()->json(['message' => 'Category not found'], 404);
+        }
+        $motors = $category->motors()->with(['brand', 'images'])->paginate(20);
+        return response()->json($motors, 200);
     }
 }
