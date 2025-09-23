@@ -20,12 +20,12 @@ Route::get('/motorinci-generate-image', [App\Http\Controllers\Motorinci\AiContro
 Route::get('/motorinci-generate-imagw', [App\Http\Controllers\Motorinci\AiController::class, 'generateImagw']);
 Route::get('/motorinci-generate', [App\Http\Controllers\Motorinci\AiController::class, 'generate']);
 Route::get('/motorinci-gen/{id}', [App\Http\Controllers\Motorinci\AiController::class, 'gen']);
+Route::get('/motorinci/front/home', [FrontController::class, 'home']);
 
 Route::middleware('auth:sanctum')->prefix('motorinci')->group(function () {
     Route::get('search-motors', [MotorController::class, 'search']);
     Route::get('motors/random', [MotorController::class, 'random']);
     Route::get('komparasi/{idsatu}/{iddua}', [MotorController::class, 'komparasi']);
-    Route::get('front/home', [FrontController::class, 'home']);
     Route::get('brands/{id}/motors', [MotorController::class, 'getMotorsByBrand']);
     Route::get('categories/{id}/motors', [MotorController::class, 'getMotorsByCategory']);
     Route::post('ai', [App\Http\Controllers\Motorinci\AiController::class, 'ai']);

@@ -12,9 +12,9 @@ class FrontController extends Controller
 {
     public function home($limit = 10)
     {
-        $motors = Motor::inRandomOrder()->with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup'])->take($limit)->get();
-        $categories = Category::with('motors')->get();
-        $brands = Brand::with('motors')->get();
+        $motors = Motor::inRandomOrder()->with(['brand'])->take($limit)->get();
+        $categories = Category::get();
+        $brands = Brand::get();
         return response()->json([
             'message' => 'Welcome to the Motorinci API Home',
             'status' => 'success',

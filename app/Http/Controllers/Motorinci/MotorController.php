@@ -258,7 +258,7 @@ class MotorController extends Controller
             return response()->json(['message' => 'Search query is required'], 400);
         }
 
-        $motors = Motor::where('name', 'like', "%{$search}%")->with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup'])->get();
+        $motors = Motor::where('name', 'like', "%{$search}%")->with(['brand'])->get();
 
         return response()->json($motors);
     }
@@ -280,7 +280,7 @@ class MotorController extends Controller
     public function random($limit = 20)
     {
         // $motors = Motor::inRandomOrder()->take($limit)->get();
-        $motors = Motor::inRandomOrder()->with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup'])->take($limit)->get();
+        $motors = Motor::inRandomOrder()->with(['brand'])->take($limit)->get();
 
         return response()->json($motors);
     }
@@ -325,7 +325,11 @@ class MotorController extends Controller
         }
         $motors = $brand->motors()->with(['brand', 'images'])->paginate(20);
 
-        return response()->json($motors, 200);
+        return response()->json([
+            'message' => 'Motors by brand retrieved successfully',
+            'brand' => $brand,
+            'data' => $motors
+        ], 200);
     }
 
     public function getMotorsByCategory($id)
@@ -335,6 +339,10 @@ class MotorController extends Controller
             return response()->json(['message' => 'Category not found'], 404);
         }
         $motors = $category->motors()->with(['brand', 'images'])->paginate(20);
-        return response()->json($motors, 200);
+        return response()->json([
+            'message' => 'Motors by category retrieved successfully',
+            'category' => $category,
+            'data' => $motors
+        ], 200);
     }
 }
