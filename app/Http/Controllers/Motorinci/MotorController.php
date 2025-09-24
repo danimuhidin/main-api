@@ -323,7 +323,7 @@ class MotorController extends Controller
         if (! $brand) {
             return response()->json(['message' => 'Brand not found'], 404);
         }
-        $motors = $brand->motors()->with(['brand', 'images'])->paginate(20);
+        $motors = $brand->motors()->with(['brand', 'images'])->paginate(10);
 
         return response()->json([
             'message' => 'Motors by brand retrieved successfully',
@@ -338,7 +338,7 @@ class MotorController extends Controller
         if (! $category) {
             return response()->json(['message' => 'Category not found'], 404);
         }
-        $motors = $category->motors()->with(['brand', 'images'])->paginate(20);
+        $motors = $category->motors()->with(['brand', 'images'])->paginate(10);
         return response()->json([
             'message' => 'Motors by category retrieved successfully',
             'category' => $category,
