@@ -20,6 +20,7 @@ Route::get('/motorinci-generate-image', [App\Http\Controllers\Motorinci\AiContro
 Route::get('/motorinci-generate-imagw', [App\Http\Controllers\Motorinci\AiController::class, 'generateImagw']);
 Route::get('/motorinci-generate', [App\Http\Controllers\Motorinci\AiController::class, 'generate']);
 Route::get('/motorinci-gen/{id}', [App\Http\Controllers\Motorinci\AiController::class, 'gen']);
+Route::get('/motorinci-gen2/{id}', [App\Http\Controllers\Motorinci\AiController::class, 'gen2']);
 Route::get('/motorinci/front/home', [FrontController::class, 'home']);
 
 Route::middleware('auth:sanctum')->prefix('motorinci')->group(function () {

@@ -15,6 +15,8 @@ class Category extends Model
 
     public function motors()
     {
-        return $this->hasMany(Motor::class, 'category_id')->with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup', 'reviews', 'availableColors.color']);
+        return $this->hasMany(Motor::class, 'category_id')->with(['brand', 'category', 'features.featureItem', 'images', 'specifications.specificationItem.specificationGroup', 'reviews', 'availableColors.color'])
+        ->orderBy('name', 'ASC')
+        ->orderBy('year_model', 'DESC');
     }
 }
