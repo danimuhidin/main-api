@@ -190,7 +190,7 @@ class MotorController extends Controller
             'brand_id' => 'required|integer|exists:motorinci_brands,id',
             'category_id' => 'required|integer|exists:motorinci_categories,id',
             'year_model' => 'required|integer|digits:4',
-            'engine_cc' => 'required|integer',
+            'engine_cc' => 'required|string',
             'low_price' => 'nullable|integer',
             'up_price' => 'nullable|integer',
             'desc' => 'nullable|string',
